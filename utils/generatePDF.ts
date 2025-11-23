@@ -16,9 +16,17 @@ export const generatePDF = ({ data, lang }: PDFOptions) => {
 
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 15;
-  const contentWidth = pageWidth - (margin * 2);
-  let yPosition = margin;
+  
+  // Two-column layout
+  const leftColumnWidth = 70; // Dark purple sidebar
+  const rightColumnStart = leftColumnWidth;
+  const rightColumnWidth = pageWidth - leftColumnWidth;
+  const margin = 10;
+  const leftMargin = margin;
+  const rightMargin = rightColumnStart + margin;
+  
+  let leftY = margin;
+  let rightY = margin;
 
   // Helper function to convert hex to RGB
   const hexToRgb = (hex: string): [number, number, number] => {
@@ -32,33 +40,27 @@ export const generatePDF = ({ data, lang }: PDFOptions) => {
       : [0, 0, 0];
   };
 
-  // Modern color scheme with better contrast
+  // Color scheme: Purple neon and black
   const colorHex = {
-    dark: '#0a0a0a',
-    surface: '#1a1a1a',
-    purple: '#8b5cf6',
-    purpleLight: '#a78bfa',
-    purpleDark: '#6d28d9',
-    text: '#1a1a1a',
-    textSecondary: '#4a4a4a',
-    textMuted: '#6b6b6b',
-    border: '#e5e5e5',
-    bgLight: '#f8f9fa',
-    accent: '#8b5cf6'
+    darkPurple: '#1a0a2e', // Very dark purple/black
+    neonPurple: '#a855f7', // Bright neon purple
+    neonPurpleLight: '#c084fc', // Lighter neon purple
+    white: '#ffffff',
+    textDark: '#1a1a1a',
+    textGray: '#4a4a4a',
+    textLight: '#e5e7eb',
+    bgLight: '#f3f4f6'
   };
 
   const colors = {
-    dark: hexToRgb(colorHex.dark),
-    surface: hexToRgb(colorHex.surface),
-    purple: hexToRgb(colorHex.purple),
-    purpleLight: hexToRgb(colorHex.purpleLight),
-    purpleDark: hexToRgb(colorHex.purpleDark),
-    text: hexToRgb(colorHex.text),
-    textSecondary: hexToRgb(colorHex.textSecondary),
-    textMuted: hexToRgb(colorHex.textMuted),
-    border: hexToRgb(colorHex.border),
-    bgLight: hexToRgb(colorHex.bgLight),
-    accent: hexToRgb(colorHex.accent)
+    darkPurple: hexToRgb(colorHex.darkPurple),
+    neonPurple: hexToRgb(colorHex.neonPurple),
+    neonPurpleLight: hexToRgb(colorHex.neonPurpleLight),
+    white: hexToRgb(colorHex.white),
+    textDark: hexToRgb(colorHex.textDark),
+    textGray: hexToRgb(colorHex.textGray),
+    textLight: hexToRgb(colorHex.textLight),
+    bgLight: hexToRgb(colorHex.bgLight)
   };
 
   // Helper function to draw filled rectangle
@@ -67,28 +69,10 @@ export const generatePDF = ({ data, lang }: PDFOptions) => {
     doc.rect(x, y, w, h, 'F');
   };
 
-  // Helper function to add new page if needed
-  const checkPageBreak = (requiredHeight: number) => {
-    if (yPosition + requiredHeight > pageHeight - margin) {
-      doc.addPage();
-      yPosition = margin;
-      return true;
-    }
-    return false;
-  };
-
-  // Helper function to draw a line
-  const drawLine = (y: number, lineColor: [number, number, number] = colors.border, width: number = 0.5) => {
-    doc.setDrawColor(lineColor[0], lineColor[1], lineColor[2]);
-    doc.setLineWidth(width);
-    doc.line(margin, y, pageWidth - margin, y);
-  };
-
-  // Helper function to draw accent line (purple)
-  const drawAccentLine = (y: number) => {
-    doc.setDrawColor(colors.purple[0], colors.purple[1], colors.purple[2]);
-    doc.setLineWidth(2);
-    doc.line(margin, y, margin + 30, y);
+  // Helper function to draw circle
+  const drawCircle = (x: number, y: number, radius: number, color: [number, number, number]) => {
+    doc.setFillColor(color[0], color[1], color[2]);
+    doc.ellipse(x, y, radius, radius, 'F');
   };
 
   // Helper function to add text with styling
@@ -98,266 +82,311 @@ export const generatePDF = ({ data, lang }: PDFOptions) => {
     color?: [number, number, number];
     align?: 'left' | 'center' | 'right';
   } = {}) => {
-    const { fontSize = 12, fontStyle = 'normal', color = colors.text, align = 'left' } = options;
+    const { fontSize = 12, fontStyle = 'normal', color = colors.textDark, align = 'left' } = options;
     doc.setFontSize(fontSize);
     doc.setFont('helvetica', fontStyle);
     doc.setTextColor(color[0], color[1], color[2]);
     doc.text(text, x, y, { align });
   };
 
-  // Header Section with modern design
+  // Helper function to check page break for right column
+  const checkPageBreak = (requiredHeight: number, isLeft: boolean = false) => {
+    const currentY = isLeft ? leftY : rightY;
+    if (currentY + requiredHeight > pageHeight - margin) {
+      doc.addPage();
+      // Redraw left column background on new page
+      drawRect(0, 0, leftColumnWidth, pageHeight, colors.darkPurple);
+      if (isLeft) {
+        leftY = margin;
+      } else {
+        rightY = margin;
+      }
+      return true;
+    }
+    return false;
+  };
+
   const profile = data.profile;
   const content = lang === 'en' ? data.english : data.spanish;
 
-  // Top accent bar
-  drawRect(0, 0, pageWidth, 4, colors.purple);
-  yPosition = 18;
+  // Draw left column background (dark purple/black)
+  drawRect(0, 0, leftColumnWidth, pageHeight, colors.darkPurple);
 
-  // Name with accent
-  addText(profile.name, margin, yPosition, {
-    fontSize: 32,
-    fontStyle: 'bold',
-    color: colors.text
-  });
-  yPosition += 12;
-
-  // Headline with purple accent
-  addText(content.headline, margin, yPosition, {
-    fontSize: 16,
-    fontStyle: 'bold',
-    color: colors.purple
-  });
-  yPosition += 10;
-
-  // Contact Info in a subtle box
-  const contactInfo = [
-    profile.email,
-    profile.phone,
-    profile.location
-  ].filter(Boolean);
-
-  contactInfo.forEach((info, idx) => {
-    addText(info, margin + (idx * (contentWidth / 3)), yPosition, {
-      fontSize: 9,
-      color: colors.textSecondary,
-      align: 'left'
-    });
-  });
-  yPosition += 10;
-
-  // Summary Section with background
-  checkPageBreak(35);
-  drawLine(yPosition - 3, colors.border, 0.3);
-  yPosition += 5;
+  // ========== LEFT COLUMN (Dark Purple Sidebar) ==========
   
-  addText(lang === 'en' ? 'Summary' : 'Resumen', margin, yPosition, {
-    fontSize: 18,
-    fontStyle: 'bold',
-    color: colors.purple
-  });
-  drawAccentLine(yPosition - 2);
-  yPosition += 8;
-
-  // Summary in a subtle background box
-  const summaryLines = doc.splitTextToSize(content.summary, contentWidth - 4);
-  const summaryHeight = summaryLines.length * 5 + 4;
-  drawRect(margin, yPosition - 3, contentWidth, summaryHeight, colors.bgLight);
+  // Profile picture placeholder (circle)
+  const profilePicRadius = 18;
+  const profilePicX = leftColumnWidth / 2;
+  const profilePicY = leftY + profilePicRadius + 8;
   
-  summaryLines.forEach((line: string) => {
-    addText(line, margin + 2, yPosition, {
-      fontSize: 10,
-      color: colors.text,
-      align: 'left'
+  // White circle background for profile pic with border
+  drawCircle(profilePicX, profilePicY, profilePicRadius, colors.white);
+  // Inner circle with dark purple
+  drawCircle(profilePicX, profilePicY, profilePicRadius - 1.5, colors.darkPurple);
+  
+  leftY = profilePicY + profilePicRadius + 20;
+
+  // Name in uppercase, white, bold, larger
+  const nameParts = profile.name.split(' ');
+  nameParts.forEach((part, idx) => {
+    addText(part.toUpperCase(), leftColumnWidth / 2, leftY, {
+      fontSize: 16,
+      fontStyle: 'bold',
+      color: colors.white,
+      align: 'center'
     });
-    yPosition += 5;
+    leftY += 7;
   });
-  yPosition += 5;
+  leftY += 5;
 
-  // Experience Section
-  checkPageBreak(40);
-  drawLine(yPosition - 3, colors.border, 0.3);
-  yPosition += 5;
-
-  addText(lang === 'en' ? 'Experience' : 'Experiencia Profesional', margin, yPosition, {
-    fontSize: 18,
+  // Headline/Title in uppercase, neon purple
+  addText(content.headline.toUpperCase(), leftColumnWidth / 2, leftY, {
+    fontSize: 9,
     fontStyle: 'bold',
-    color: colors.purple
+    color: colors.neonPurpleLight,
+    align: 'center'
   });
-  drawAccentLine(yPosition - 2);
-  yPosition += 10;
+  leftY += 12;
 
-  content.experience.forEach((exp: ExperienceData, index: number) => {
-    checkPageBreak(40);
+  // Contact Information Section
+  const contactTitleHeight = 5;
+  drawRect(leftMargin, leftY - 3, leftColumnWidth - (leftMargin * 2), contactTitleHeight, colors.neonPurpleLight);
+  addText((lang === 'en' ? 'CONTACT' : 'CONTACTO').toUpperCase(), leftColumnWidth / 2, leftY, {
+    fontSize: 10,
+    fontStyle: 'bold',
+    color: colors.white,
+    align: 'center'
+  });
+  leftY += 10;
 
-    // Experience item with left border accent
-    drawRect(margin - 2, yPosition - 2, 2, 1, colors.purple);
+  // Contact items with icons (using symbols)
+  const contactItems = [
+    { icon: '📱', text: profile.phone },
+    { icon: '✉️', text: profile.email },
+    { icon: '🌐', text: profile.email.split('@')[1] || '' },
+    { icon: '📍', text: profile.location }
+  ].filter(item => item.text);
 
-    // Role and Dates
-    addText(exp.role, margin, yPosition, {
-      fontSize: 14,
-      fontStyle: 'bold',
-      color: colors.text
-    });
-
-    addText(exp.dates, pageWidth - margin, yPosition, {
-      fontSize: 10,
-      fontStyle: 'bold',
-      color: colors.purple,
-      align: 'right'
-    });
-    yPosition += 7;
-
-    // Company and Location
-    addText(exp.company, margin, yPosition, {
-      fontSize: 12,
-      fontStyle: 'bold',
-      color: colors.textSecondary
-    });
-
-    addText(exp.location, pageWidth - margin, yPosition, {
-      fontSize: 9,
-      color: colors.textMuted,
-      align: 'right'
-    });
-    yPosition += 7;
-
-    // Highlights with better formatting
-    exp.highlights.forEach((highlight: string) => {
-      checkPageBreak(8);
-      const highlightLines = doc.splitTextToSize(highlight, contentWidth - 8);
-      
-      // Bullet point using ellipse
-      doc.setFillColor(colors.purple[0], colors.purple[1], colors.purple[2]);
-      doc.ellipse(margin + 3, yPosition - 1, 1, 1, 'F');
-      
-      highlightLines.forEach((line: string, lineIdx: number) => {
-        addText(line, margin + 7, yPosition, {
-          fontSize: 9.5,
-          color: colors.text,
-          align: 'left'
-        });
-        yPosition += 4.5;
+  contactItems.forEach((item) => {
+    checkPageBreak(8, true);
+    const contactText = `${item.icon} ${item.text}`;
+    const contactLines = doc.splitTextToSize(contactText, leftColumnWidth - (leftMargin * 2));
+    contactLines.forEach((line: string) => {
+      addText(line, leftColumnWidth / 2, leftY, {
+        fontSize: 8,
+        color: colors.textLight,
+        align: 'center'
       });
-      yPosition += 2;
+      leftY += 4;
     });
-
-    yPosition += 6;
-    
-    // Subtle separator between experiences
-    if (index < content.experience.length - 1) {
-      drawLine(yPosition - 2, colors.border, 0.2);
-      yPosition += 3;
-    }
+    leftY += 2;
   });
 
-  // Skills Section
-  checkPageBreak(50);
-  drawLine(yPosition - 3, colors.border, 0.3);
-  yPosition += 5;
+  // ========== RIGHT COLUMN (White Content Area) ==========
+  
+  rightY = margin + 5;
 
-  addText(lang === 'en' ? 'Technical Skills' : 'Habilidades Técnicas', margin, yPosition, {
-    fontSize: 18,
+  // ABOUT ME / SUMMARY Section
+  checkPageBreak(30, false);
+  
+  // Section title with purple background highlight
+  const sectionTitleHeight = 6;
+  drawRect(rightColumnStart + margin, rightY - 4, rightColumnWidth - (margin * 2), sectionTitleHeight, colors.neonPurpleLight);
+  
+  addText((lang === 'en' ? 'ABOUT ME' : 'SOBRE MÍ').toUpperCase(), rightColumnStart + margin + 3, rightY, {
+    fontSize: 12,
     fontStyle: 'bold',
-    color: colors.purple
+    color: colors.white,
+    align: 'left'
   });
-  drawAccentLine(yPosition - 2);
-  yPosition += 10;
+  rightY += 10;
 
+  // Summary text
+  const summaryLines = doc.splitTextToSize(content.summary, rightColumnWidth - (margin * 3));
+  summaryLines.forEach((line: string) => {
+    addText(line, rightColumnStart + margin, rightY, {
+      fontSize: 9,
+      color: colors.textDark,
+      align: 'left'
+    });
+    rightY += 4.5;
+  });
+  rightY += 8;
+
+  // SKILLS Section
+  checkPageBreak(40, false);
+  
+  // Section title
+  drawRect(rightColumnStart + margin, rightY - 4, rightColumnWidth - (margin * 2), sectionTitleHeight, colors.neonPurpleLight);
+  addText((lang === 'en' ? 'SKILLS' : 'HABILIDADES').toUpperCase(), rightColumnStart + margin + 3, rightY, {
+    fontSize: 12,
+    fontStyle: 'bold',
+    color: colors.white,
+    align: 'left'
+  });
+  rightY += 10;
+
+  // Skills with progress bars
   const skills = content.skills as SkillSet;
   const skillEntries = Object.entries(skills);
-
-  skillEntries.forEach(([category, items], catIndex) => {
-    checkPageBreak(20);
-
-    // Category with background
-    const categoryLines = doc.splitTextToSize(category, contentWidth - 4);
-    const categoryHeight = categoryLines.length * 5 + 3;
+  
+  skillEntries.forEach(([category, items]) => {
+    checkPageBreak(15, false);
     
-    // Category background
-    drawRect(margin, yPosition - 4, contentWidth, categoryHeight, colors.bgLight);
-    
-    // Category Title
-    addText(category, margin + 2, yPosition, {
-      fontSize: 12,
+    // Category name
+    addText(category, rightColumnStart + margin, rightY, {
+      fontSize: 10,
       fontStyle: 'bold',
-      color: colors.purple
+      color: colors.textDark,
+      align: 'left'
     });
-    yPosition += 7;
+    rightY += 5;
 
-    // Skills list - simple and clean
+    // Skills list
     const skillList = typeof items === 'string' ? items.split(', ') : [];
     const skillsText = skillList.join(' • ');
-    const skillLines = doc.splitTextToSize(skillsText, contentWidth - 4);
+    const skillLines = doc.splitTextToSize(skillsText, rightColumnWidth - (margin * 3));
     
     skillLines.forEach((line: string) => {
-      addText(line, margin + 2, yPosition, {
-        fontSize: 9.5,
-        color: colors.text,
+      addText(line, rightColumnStart + margin, rightY, {
+        fontSize: 8.5,
+        color: colors.textGray,
         align: 'left'
       });
-      yPosition += 4.5;
+      rightY += 4;
     });
-    yPosition += 6;
+    rightY += 6;
   });
 
-  // Education Section (if exists)
-  if (content.education && content.education.length > 0) {
-    checkPageBreak(25);
-    drawLine(yPosition - 3, colors.border, 0.3);
-    yPosition += 5;
+  // EXPERIENCES Section
+  checkPageBreak(30, false);
+  
+  // Section title
+  drawRect(rightColumnStart + margin, rightY - 4, rightColumnWidth - (margin * 2), sectionTitleHeight, colors.neonPurpleLight);
+  addText((lang === 'en' ? 'EXPERIENCES' : 'EXPERIENCIAS').toUpperCase(), rightColumnStart + margin + 3, rightY, {
+    fontSize: 12,
+    fontStyle: 'bold',
+    color: colors.white,
+    align: 'left'
+  });
+  rightY += 10;
 
-    addText(lang === 'en' ? 'Education' : 'Educación', margin, yPosition, {
-      fontSize: 18,
+  // Timeline for experiences
+  const timelineX = rightColumnStart + margin + 3;
+  let timelineStartY = rightY;
+  let lastExpY = rightY;
+
+  content.experience.forEach((exp: ExperienceData, index: number) => {
+    checkPageBreak(35, false);
+    
+    // Timeline dot
+    drawCircle(timelineX, rightY + 3, 2, colors.neonPurple);
+    
+    // Draw timeline line (except for first item)
+    if (index > 0) {
+      doc.setDrawColor(colors.neonPurple[0], colors.neonPurple[1], colors.neonPurple[2]);
+      doc.setLineWidth(0.5);
+      doc.line(timelineX, lastExpY + 5, timelineX, rightY - 2);
+    }
+    
+    // Company and dates
+    addText(`${exp.company} ${exp.dates}`, timelineX + 6, rightY, {
+      fontSize: 10,
       fontStyle: 'bold',
-      color: colors.purple
+      color: colors.textDark,
+      align: 'left'
     });
-    drawAccentLine(yPosition - 2);
-    yPosition += 10;
+    rightY += 5;
+
+    // Role
+    addText(exp.role, timelineX + 6, rightY, {
+      fontSize: 9,
+      fontStyle: 'bold',
+      color: colors.textGray,
+      align: 'left'
+    });
+    rightY += 5;
+
+    // Highlights
+    exp.highlights.forEach((highlight: string) => {
+      checkPageBreak(8, false);
+      const highlightLines = doc.splitTextToSize(highlight, rightColumnWidth - (margin * 3) - 10);
+      highlightLines.forEach((line: string) => {
+        addText(`• ${line}`, timelineX + 6, rightY, {
+          fontSize: 8.5,
+          color: colors.textGray,
+          align: 'left'
+        });
+        rightY += 4;
+      });
+      rightY += 2;
+    });
+
+    lastExpY = rightY;
+    rightY += 8;
+  });
+
+  // EDUCATION Section
+  if (content.education && content.education.length > 0) {
+    checkPageBreak(25, false);
+    
+    // Section title
+    drawRect(rightColumnStart + margin, rightY - 4, rightColumnWidth - (margin * 2), sectionTitleHeight, colors.neonPurpleLight);
+    addText((lang === 'en' ? 'EDUCATION' : 'EDUCACIÓN').toUpperCase(), rightColumnStart + margin + 3, rightY, {
+      fontSize: 12,
+      fontStyle: 'bold',
+      color: colors.white,
+      align: 'left'
+    });
+    rightY += 10;
 
     content.education.forEach((edu) => {
-      checkPageBreak(15);
+      checkPageBreak(15, false);
       
-      // Education item with background
-      const eduHeight = 12;
-      drawRect(margin, yPosition - 4, contentWidth, eduHeight, colors.bgLight);
-      
-      addText(edu.degree, margin + 2, yPosition, {
-        fontSize: 12,
-        fontStyle: 'bold',
-        color: colors.text
-      });
-      yPosition += 6;
-
-      addText(`${edu.institution} • ${edu.year}`, margin + 2, yPosition, {
+      // Year
+      addText(edu.year, rightColumnStart + margin, rightY, {
         fontSize: 10,
-        color: colors.textSecondary
+        fontStyle: 'bold',
+        color: colors.neonPurple,
+        align: 'left'
       });
-      yPosition += 8;
+      rightY += 5;
+
+      // Institution
+      addText(edu.institution, rightColumnStart + margin, rightY, {
+        fontSize: 10,
+        fontStyle: 'bold',
+        color: colors.textDark,
+        align: 'left'
+      });
+      rightY += 5;
+
+      // Degree
+      addText(edu.degree, rightColumnStart + margin, rightY, {
+        fontSize: 9,
+        color: colors.textGray,
+        align: 'left'
+      });
+      rightY += 8;
     });
   }
 
-  // Footer with modern design
+  // Footer for all pages
   const totalPages = doc.getNumberOfPages();
   for (let i = 1; i <= totalPages; i++) {
     doc.setPage(i);
     
-    // Footer line
-    drawLine(pageHeight - 12, colors.border, 0.3);
+    // Redraw left column background
+    drawRect(0, 0, leftColumnWidth, pageHeight, colors.darkPurple);
     
-    // Footer text
-    doc.setFontSize(8);
-    doc.setTextColor(colors.textMuted[0], colors.textMuted[1], colors.textMuted[2]);
+    // Footer text in right column
+    doc.setFontSize(7);
+    doc.setTextColor(colors.textGray[0], colors.textGray[1], colors.textGray[2]);
     doc.setFont('helvetica', 'normal');
-    doc.text(
-      `${profile.name} - ${lang === 'en' ? 'Curriculum Vitae' : 'Currículum Vitae'}`,
-      pageWidth / 2,
-      pageHeight - 8,
-      { align: 'center' }
-    );
     doc.text(
       `${i} / ${totalPages}`,
       pageWidth - margin,
-      pageHeight - 8,
+      pageHeight - 5,
       { align: 'right' }
     );
   }
@@ -368,4 +397,3 @@ export const generatePDF = ({ data, lang }: PDFOptions) => {
   // Save PDF
   doc.save(filename);
 };
-

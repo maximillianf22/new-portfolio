@@ -1,20 +1,50 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Portfolio Personal
 
-# Run and deploy your AI Studio app
+Portfolio web desarrollado con React, TypeScript y Vite. Incluye secciones de proyectos, experiencia, habilidades y un playground interactivo.
 
-This contains everything you need to run your app locally.
+## Tecnologías
 
-View your app in AI Studio: https://ai.studio/apps/drive/1WxBPSrS9lfh7bnD9goOBhG_9xEg5m83b
+- React + TypeScript
+- Vite
+- Tailwind CSS
+- Framer Motion
 
-## Run Locally
+## Instalación
 
-**Prerequisites:**  Node.js
+1. Clona el repositorio:
 
+   ```bash
+   git clone https://github.com/maximillianf22/new-portfolio.git
+   cd new-portfolio
+   ```
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+2. Instala las dependencias:
+
+   ```bash
+   npm install
+   ```
+
+3. Configura las variables de entorno (si es necesario):
+   Crea un archivo `.env.local` y agrega tus claves de API si las necesitas.
+
+4. Ejecuta el proyecto en modo desarrollo:
+
+   ```bash
+   npm run dev
+   ```
+
+5. Construye para producción:
+   ```bash
+   npm run build
+   ```
+
+## Estructura del Proyecto
+
+- `components/` - Componentes React reutilizables
+- `data.ts` - Datos del portfolio (proyectos, experiencia, etc.)
+- `utils/` - Utilidades y helpers
+- `public/` - Assets estáticos
+
+## Licencia
+
+MIT
