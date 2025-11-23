@@ -5,7 +5,7 @@ export const data: AppData = {
     "name": "Maximillian Fernandez",
     "phone": "+57 305 2607055",
     "email": "maximillianf22@gmail.com",
-    "location": "Bogotá, Colombia",
+    "location": "Barranquilla, Colombia",
     "avatar": "/images/profile.jpg",
     "links": {
       "linkedin": "LinkedIn URL",
@@ -31,8 +31,8 @@ export const data: AppData = {
       },
       {
         "company": "LAIKA MASCOTAS",
-        "location": "Bogotá, Colombia",
-        "role": "Desarrollador Web Senior & Tech Lead",
+        "location": "Barranquilla, Colombia",
+        "role": "Frontend Senior & Tech Lead",
         "dates": "2022 – 2023",
         "highlights": [
           "Escalabilidad: Lideré la migración frontend a Web 3.0 (React, GraphQL).",
@@ -106,14 +106,14 @@ export const data: AppData = {
     ]
   },
   "english": {
-    "headline": "Technical Product Lead & Frontend Architect",
+    "headline": "Technical Product Lead & Frontend Senior",
     "sub_headline": "Building the Future of Web & AI",
     "summary": "Senior Software Engineer and Technical Lead with 10 years of experience building scalable digital products. Expert in bridging the gap between Frontend Architecture (React/Next.js), Product Design (Figma), and Business Strategy. Currently leading technical strategy for a US-based AI startup, designing and engineering architectures from scratch and integrating AI workflows.",
     "experience": [
       {
         "company": "HUMANCORE AI",
         "location": "Remote, USA",
-        "role": "Technical Product Lead & Frontend Architect",
+        "role": "Technical Product Lead & Frontend Senior",
         "dates": "2023 – Present",
         "highlights": [
           "Frontend Architecture: Architected product core from scratch (Next.js App Router, TypeScript).",
@@ -124,8 +124,8 @@ export const data: AppData = {
       },
       {
         "company": "LAIKA MASCOTAS",
-        "location": "Bogotá, Colombia",
-        "role": "Senior Web Developer",
+        "location": "Barranquilla, Colombia",
+        "role": "Senior Frontend Developer & Tech Lead",
         "dates": "2022 – 2023",
         "highlights": [
           "Senior Engineering: Stabilized and scaled leading pet e-commerce in Latam.",
@@ -146,7 +146,7 @@ export const data: AppData = {
       {
         "company": "DEVELOPAPP SAS",
         "location": "Barranquilla, Colombia",
-        "role": "Frontend Project Lead",
+        "role": "Frontend Developer",
         "dates": "2018 – 2020",
         "highlights": [
           "Multi-Industry: Led frontend for Fintech, E-Commerce, and SaaS clients.",
