@@ -11,6 +11,7 @@ import { ProjectItem } from "./types";
 import { data } from "./data";
 import { Globe, Download } from "lucide-react";
 import { generatePDF } from "./utils/generatePDF";
+import { trackEvent } from "./utils/analytics";
 
 const projects: ProjectItem[] = [
   {
@@ -53,15 +54,46 @@ const projects: ProjectItem[] = [
 
 function App() {
   const [lang, setLang] = useState<"en" | "es">("en");
+  
+  // Track Page Visit
+  React.useEffect(() => {
+    trackEvent('page_visited', { path: window.location.pathname });
+  }, []);
+
+  // Track Scroll Depth (50% and 90%)
+  React.useEffect(() => {
+    let tracked50 = false;
+    let tracked90 = false;
+
+    const handleScroll = () => {
+      const scrollPercentage = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100;
+      
+      if (scrollPercentage > 50 && !tracked50) {
+        trackEvent('scroll', { depth: '50%' });
+        tracked50 = true;
+      }
+      
+      if (scrollPercentage > 90 && !tracked90) {
+        trackEvent('scroll', { depth: '90%' });
+        tracked90 = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const content = lang === "en" ? data.english : data.spanish;
   const profile = data.profile;
 
   const toggleLanguage = () => {
-    setLang((prev) => (prev === "en" ? "es" : "en"));
+    const newLang = lang === "en" ? "es" : "en";
+    setLang(newLang);
+    trackEvent('click_button', { type: 'language_toggle', value: newLang });
   };
 
   const handleDownloadPDF = () => {
+    trackEvent('click_button', { type: 'download_cv' });
     generatePDF({ data, lang });
   };
 

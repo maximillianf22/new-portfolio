@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Send, Bot, User, RefreshCw } from 'lucide-react';
 import { ChatMessage } from '../types';
 import { data } from '../data';
+import { trackEvent } from '../utils/analytics';
 
 interface AIPlaygroundProps {
     lang: 'en' | 'es';
@@ -158,6 +159,8 @@ INSTRUCTIONS:
     if (!inputValue.trim() || isTyping) return;
     
     const userText = inputValue.trim();
+    trackEvent('chat_interaction', { type: 'message_sent', length: userText.length });
+    
     setMessages(prev => [...prev, { id: Date.now().toString(), role: 'user', text: userText }]);
     setInputValue("");
     scrollToBottom();
@@ -172,6 +175,7 @@ INSTRUCTIONS:
 
   const handleQuestionClick = (question: string) => {
     if (isTyping) return;
+    trackEvent('chat_interaction', { type: 'preset_question', question });
     setMessages(prev => [...prev, { id: Date.now().toString(), role: 'user', text: question }]);
     scrollToBottom();
     simulateResponse(question);
