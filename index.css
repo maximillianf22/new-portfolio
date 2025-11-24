@@ -1,0 +1,76 @@
+body {
+  background-color: #0a0a0a;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Code blocks spacing */
+pre {
+  line-height: 1.2 !important;
+  margin: 0 !important;
+}
+
+pre code {
+  line-height: 1.2 !important;
+  display: block !important;
+  white-space: pre !important;
+  font-size: 0.875rem !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+/* Markdown content in chat */
+.markdown-content {
+  word-wrap: break-word;
+}
+
+.markdown-content p {
+  margin: 0.5rem 0;
+}
+
+.markdown-content p:first-child {
+  margin-top: 0;
+}
+
+.markdown-content p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-content pre {
+  margin: 0.5rem 0 !important;
+}
+
+.markdown-content code {
+  font-size: 0.75rem;
+}
+
+.markdown-content a {
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.markdown-content strong {
+  font-weight: 600;
+}
+
+.markdown-content em {
+  font-style: italic;
+}
