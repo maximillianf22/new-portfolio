@@ -42,14 +42,8 @@ export const BentoGrid: React.FC<BentoGridProps> = ({ summary, currentRole, loca
                <span className="text-xl">👋</span>
             </div>
             <h3 className="text-2xl font-semibold text-white mb-4">{lang === 'en' ? "Architecture & Design" : "Arquitectura & Diseño"}</h3>
-            <p className="text-neutral-400 leading-relaxed text-sm md:text-base mb-4">
+            <p className="text-neutral-400 leading-relaxed text-sm md:text-base">
               {summary}
-            </p>
-            <p className="text-neutral-500 text-xs leading-relaxed">
-              {lang === 'en' 
-                ? "With over 10 years of experience building scalable web applications, I specialize in translating complex business requirements into elegant technical solutions. My approach combines deep technical expertise with product thinking and user-centered design principles."
-                : "Con más de 10 años de experiencia construyendo aplicaciones web escalables, me especializo en traducir requisitos complejos de negocio en soluciones técnicas elegantes. Mi enfoque combina experiencia técnica profunda con pensamiento de producto y principios de diseño centrado en el usuario."
-              }
             </p>
           </div>
           <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

@@ -16,7 +16,7 @@ export const data: AppData = {
   "spanish": {
     "headline": "Líder Técnico de Producto & Frontend Senior",
     "sub_headline": "Cerrando la brecha entre Diseño, Ingeniería y Negocio",
-    "summary": "Ingeniero de Software y Líder Técnico con 10 años de experiencia, especializado en Arquitectura Frontend. Mi enfoque combina la precisión técnica (React/Next.js) con la sensibilidad de producto (UX/UI), traduciendo requisitos complejos en interfaces escalables. Valoro la claridad en la documentación y el intercambio de conocimiento como base para el éxito del equipo.",
+    "summary": "Ingeniero de Software y Líder Técnico con 10 años de experiencia construyendo aplicaciones web escalables, especializado en Arquitectura Frontend. Mi enfoque combina experiencia técnica profunda (React/Next.js) con pensamiento de producto y principios de diseño centrado en el usuario, traduciendo requisitos complejos de negocio en soluciones técnicas elegantes. Valoro la claridad en la documentación y el intercambio de conocimiento como base para el éxito del equipo.",
     "experience": [
       {
         "company": "HUMANCORE AI",
@@ -179,7 +179,7 @@ export const data: AppData = {
   "english": {
     "headline": "Technical Product Lead & Senior Frontend Developer",
     "sub_headline": "Bridging the gap between Design, Engineering & Business",
-    "summary": "Senior Software Engineer and Technical Lead with 10 years of experience, specializing in Frontend Architecture. I combine technical precision (React/Next.js) with product sensitivity (UX/UI) to translate complex requirements into scalable interfaces. I value clear documentation and knowledge sharing as the foundation for team success.",
+    "summary": "Senior Software Engineer and Technical Lead with 10 years of experience building scalable web applications, specializing in Frontend Architecture. My approach combines deep technical expertise (React/Next.js) with product thinking and user-centered design principles, translating complex business requirements into elegant technical solutions. I value clear documentation and knowledge sharing as the foundation for team success.",
     "experience": [
       {
         "company": "HUMANCORE AI",
