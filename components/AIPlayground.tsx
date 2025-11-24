@@ -5,6 +5,60 @@ import { ChatMessage } from '../types';
 import { data } from '../data';
 import { trackEvent } from '../utils/analytics';
 
+const formatMarkdown = (text: string): string => {
+  let html = text;
+  
+  const codeBlocks: string[] = [];
+  html = html.replace(/```[\s\S]*?```/g, (match) => {
+    const id = `CODE_BLOCK_${codeBlocks.length}`;
+    codeBlocks.push(match);
+    return id;
+  });
+
+  codeBlocks.forEach((block, index) => {
+    const language = block.match(/```(\w+)?/)?.[1] || '';
+    let code = block.replace(/```[\w]*\n?/g, '').replace(/```/g, '').trim();
+    
+    code = code
+      .replace(/\r\n/g, '\n')
+      .replace(/\r/g, '\n')
+      .split('\n')
+      .map(line => line.replace(/\s+$/, ''))
+      .filter(line => line.trim() !== '')
+      .join('\n');
+    
+    html = html.replace(
+      `CODE_BLOCK_${index}`,
+      `<pre class="bg-neutral-900 border border-neutral-800 rounded-lg p-3 overflow-x-auto my-2" style="line-height: 1.2; margin: 0;"><code class="text-xs text-neutral-300 font-mono block" style="line-height: 1.2; display: block; white-space: pre;">${escapeHtml(code)}</code></pre>`
+    );
+  });
+
+  html = html
+    .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-white">$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em class="text-neutral-300">$1</em>')
+    .replace(/`([^`]+)`/g, '<code class="bg-neutral-900 text-purple-400 px-1.5 py-0.5 rounded text-xs font-mono">$1</code>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:text-purple-300 underline">$1</a>');
+
+  const paragraphs = html.split(/\n\n+/).filter(p => p.trim() !== '');
+  const formattedParagraphs = paragraphs.map(p => {
+    const cleaned = p.trim().replace(/\n/g, '<br/>');
+    return cleaned ? `<p class="mb-2">${cleaned}</p>` : '';
+  }).filter(p => p !== '').join('');
+
+  return formattedParagraphs || `<p>${html.replace(/\n/g, '<br/>')}</p>`;
+};
+
+const escapeHtml = (text: string): string => {
+  const map: { [key: string]: string } = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, (m) => map[m]);
+};
+
 interface AIPlaygroundProps {
     lang: 'en' | 'es';
 }
@@ -322,7 +376,14 @@ INSTRUCTIONS:
                             ? 'bg-neutral-800 text-neutral-200 rounded-tl-none' 
                             : 'bg-white text-black rounded-tr-none'
                         }`}>
-                            {msg.text}
+                            {msg.role === 'assistant' ? (
+                                <div 
+                                    className="markdown-content"
+                                    dangerouslySetInnerHTML={{ __html: formatMarkdown(msg.text) }}
+                                />
+                            ) : (
+                                <span>{msg.text}</span>
+                            )}
                             {msg.isTyping && <span className="inline-block w-2 h-4 ml-1 bg-purple-400 animate-pulse align-middle"></span>}
                         </div>
                     </motion.div>

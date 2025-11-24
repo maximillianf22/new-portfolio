@@ -167,11 +167,18 @@ export const Home: React.FC = () => {
             </h2>
           </BlurFade>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {projects.map((project, idx) => (
-              <BlurFade key={project.id} delay={idx * 0.2}>
-                <ProjectCard project={project} />
-              </BlurFade>
-            ))}
+            {projects.map((project, idx) => {
+              const isFirstOfThree = projects.length === 3 && idx === 0;
+              return (
+                <BlurFade 
+                  key={project.id} 
+                  delay={idx * 0.2}
+                  className={isFirstOfThree ? "md:col-span-2" : ""}
+                >
+                  <ProjectCard project={project} />
+                </BlurFade>
+              );
+            })}
           </div>
         </section>
 

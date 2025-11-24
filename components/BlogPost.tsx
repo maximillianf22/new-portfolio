@@ -39,10 +39,24 @@ const formatMarkdown = (markdown: string): string => {
 
   codeBlocks.forEach((block, index) => {
     const isTypeScript = block.includes('typescript');
-    const code = block.replace(/```typescript\n?/g, '').replace(/```\n?/g, '').trim();
+    let code = block.replace(/```typescript\n?/g, '').replace(/```\n?/g, '').trim();
+    
+    // Ultra-aggressive cleanup: normalize and remove ALL empty lines
+    code = code
+      // First normalize all line endings
+      .replace(/\r\n/g, '\n')
+      .replace(/\r/g, '\n')
+      // Split into lines
+      .split('\n')
+      // Remove trailing whitespace and filter out empty lines
+      .map(line => line.replace(/\s+$/, ''))
+      .filter(line => line.trim() !== '')
+      // Join with single newline - absolutely NO empty lines
+      .join('\n');
+    
     html = html.replace(
       `CODE_BLOCK_${index}`,
-      `<pre class="bg-neutral-900 border border-neutral-800 rounded-lg p-4 overflow-x-auto my-6"><code class="text-sm text-neutral-300 font-mono whitespace-pre">${escapeHtml(code)}</code></pre>`
+      `<pre class="bg-neutral-900 border border-neutral-800 rounded-lg p-4 overflow-x-auto my-6" style="line-height: 1.2; margin: 0;"><code class="text-sm text-neutral-300 font-mono block" style="line-height: 1.2; display: block; white-space: pre; font-family: 'Courier New', monospace;">${escapeHtml(code)}</code></pre>`
     );
   });
 
