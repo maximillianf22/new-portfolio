@@ -101,8 +101,23 @@ function App() {
     <div className="bg-[#0a0a0a] min-h-screen text-white selection:bg-purple-500/30 font-sans">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 pointer-events-none">
-        <div className="pointer-events-auto bg-neutral-900/80 backdrop-blur-md border border-neutral-800 rounded-full pl-6 pr-2 py-2 flex items-center gap-6 shadow-2xl">
-          <span className="font-bold text-white tracking-tight">MF.</span>
+        <div className="pointer-events-auto bg-neutral-900/80 backdrop-blur-md border border-neutral-800 rounded-full pl-4 pr-2 py-2 flex items-center gap-6 shadow-2xl">
+          <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+            <defs>
+              <linearGradient id="neon" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#c084fc" />
+                <stop offset="50%" stopColor="#6366f1" />
+                <stop offset="100%" stopColor="#22d3ee" />
+              </linearGradient>
+              <filter id="blur" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
+              </filter>
+            </defs>
+            <path d="M20 60 L35 30 L50 60 L65 30 L80 60" stroke="url(#neon)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" filter="url(#blur)"/>
+            <path d="M20 60 L35 30 L50 60 L65 30 L80 60" stroke="url(#neon)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+            <circle cx="20" cy="60" r="3" fill="#fff"/>
+            <circle cx="80" cy="60" r="3" fill="#fff"/>
+          </svg>
           <div className="w-[1px] h-4 bg-neutral-700"></div>
           <div className="hidden md:flex gap-4 text-sm font-medium text-neutral-400">
             <a href="#about" className="hover:text-white transition-colors">
