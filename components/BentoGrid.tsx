@@ -68,6 +68,7 @@ export const BentoGrid: React.FC<BentoGridProps> = ({ summary, currentRole, loca
         {/* Card 3: Location */}
         <BlurFade delay={0.3} className="md:col-span-1 row-span-1 rounded-3xl border border-neutral-800 bg-neutral-900/30 overflow-hidden relative">
             <iframe 
+                title="Location Map: Barranquilla, Colombia"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62669.57277727286!2d-74.8209!3d10.9878!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8ef42d44d12ae605%3A0x2633844581b91117!2sBarranquilla%2C%20Atlantico!5e0!3m2!1sen!2sco!4v1710000000000!5m2!1sen!2sco"
                 width="100%" 
                 height="100%" 

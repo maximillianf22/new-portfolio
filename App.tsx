@@ -108,47 +108,49 @@ function App() {
         </div>
       </nav>
 
-      <Hero
-        name={profile.name}
-        headline={content.headline}
-        subHeadline={content.sub_headline}
-        lang={lang}
-        avatar={profile.avatar}
-      />
-
-      <div id="about">
-        <BentoGrid
-          summary={content.summary}
-          currentRole={content.experience[0]}
-          location={profile.location}
+      <main className="relative z-10">
+        <Hero
+          name={profile.name}
+          headline={content.headline}
+          subHeadline={content.sub_headline}
           lang={lang}
+          avatar={profile.avatar}
         />
-      </div>
 
-      <Skills skills={content.skills} lang={lang} />
+        <section id="about" className="scroll-mt-24">
+          <BentoGrid
+            summary={content.summary}
+            currentRole={content.experience[0]}
+            location={profile.location}
+            lang={lang}
+          />
+        </section>
 
-      <Experience experience={content.experience} lang={lang} />
+        <Skills skills={content.skills} lang={lang} />
 
-      <AIPlayground lang={lang} />
+        <Experience experience={content.experience} lang={lang} />
 
-      <section id="projects" className="py-24 max-w-7xl mx-auto px-4">
-        <BlurFade>
-          <h2 className="text-3xl font-bold mb-12 text-white/90">
-            {lang === "en" ? "Selected Projects" : "Proyectos Destacados"}
-          </h2>
-        </BlurFade>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {projects.map((project, idx) => (
-            <BlurFade key={project.id} delay={idx * 0.2}>
-              <ProjectCard project={project} />
-            </BlurFade>
-          ))}
-        </div>
-      </section>
+        <AIPlayground lang={lang} />
 
-      <div id="contact">
-        <Footer email={profile.email} lang={lang} />
-      </div>
+        <section id="projects" className="py-24 max-w-7xl mx-auto px-4 scroll-mt-24">
+          <BlurFade>
+            <h2 className="text-3xl font-bold mb-12 text-white/90">
+              {lang === "en" ? "Selected Projects" : "Proyectos Destacados"}
+            </h2>
+          </BlurFade>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {projects.map((project, idx) => (
+              <BlurFade key={project.id} delay={idx * 0.2}>
+                <ProjectCard project={project} />
+              </BlurFade>
+            ))}
+          </div>
+        </section>
+
+        <section id="contact" className="scroll-mt-24">
+          <Footer email={profile.email} lang={lang} />
+        </section>
+      </main>
     </div>
   );
 }

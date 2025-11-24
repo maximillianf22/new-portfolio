@@ -58,6 +58,9 @@ export const Footer: React.FC<FooterProps> = ({ email, lang }) => {
                         <motion.a
                             key={social.label}
                             href={social.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Visit ${social.label}`}
                             whileHover={{ y: -5 }}
                             className="h-12 w-12 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-neutral-400 hover:text-white hover:border-purple-500 hover:bg-purple-500/10 transition-all duration-300"
                         >

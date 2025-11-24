@@ -1,62 +1,91 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Maximillian Fernandez | Frontend Architect</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-            },
-            colors: {
-              background: '#0a0a0a', // Deep charcoal
-              surface: '#171717',
-              accent: '#8b5cf6', // Violet
-            },
-            animation: {
-              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'scroll': 'scroll 40s linear infinite',
-            },
-            keyframes: {
-              scroll: {
-                '0%': { transform: 'translateX(0)' },
-                '100%': { transform: 'translateX(-50%)' },
-              }
-            }
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maximillian Fernandez | Frontend Architect</title>
+  <meta name="description"
+    content="Senior Software Engineer and Frontend Architect specializing in Next.js, AI Engineering, and UX/UI. 10+ years of experience building scalable web applications.">
+  <meta name="keywords"
+    content="Frontend Architect, Software Engineer, Next.js, React, AI Engineering, UX Design, JavaScript, TypeScript, Colombia, Remote">
+  <meta name="author" content="Maximillian Fernandez">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://max-fernandez-portfolio.vercel.app/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://max-fernandez-portfolio.vercel.app/">
+  <meta property="og:title" content="Maximillian Fernandez | Frontend Architect">
+  <meta property="og:description"
+    content="Senior Software Engineer and Frontend Architect specializing in Next.js, AI Engineering, and UX/UI.">
+  <meta property="og:image" content="https://max-fernandez-portfolio.vercel.app/og-image.jpg">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://max-fernandez-portfolio.vercel.app/">
+  <meta property="twitter:title" content="Maximillian Fernandez | Frontend Architect">
+  <meta property="twitter:description"
+    content="Senior Software Engineer and Frontend Architect specializing in Next.js, AI Engineering, and UX/UI.">
+  <meta property="twitter:image" content="https://max-fernandez-portfolio.vercel.app/og-image.jpg">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
           },
+          colors: {
+            background: '#0a0a0a', // Deep charcoal
+            surface: '#171717',
+            accent: '#8b5cf6', // Violet
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'scroll': 'scroll 40s linear infinite',
+          },
+          keyframes: {
+            scroll: {
+              '0%': { transform: 'translateX(0)' },
+              '100%': { transform: 'translateX(-50%)' },
+            }
+          }
         },
-      }
-    </script>
-    <style>
-      body {
-        background-color: #0a0a0a;
-        color: #ffffff;
-        font-family: 'Inter', sans-serif;
-        overflow-x: hidden;
-      }
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #0a0a0a;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #333;
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-      }
-    </style>
+      },
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0a0a0a;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0a0a0a;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  </style>
   <script type="importmap">
 {
   "imports": {
@@ -68,10 +97,12 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
+  <link rel="stylesheet" href="/index.css">
 </head>
-  <body>
-    <div id="root"></div>
+
+<body>
+  <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
 </body>
+
 </html>

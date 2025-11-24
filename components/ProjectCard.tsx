@@ -119,12 +119,24 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                     <h3 className="text-xl font-bold text-white">{project.title}</h3>
                     <div className="flex gap-2 pointer-events-auto">
                         {project.github && (
-                            <a href={project.github} target="_blank" rel="noopener noreferrer" className="p-1.5 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors">
+                            <a 
+                              href={project.github} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              aria-label={`View ${project.title} source code on GitHub`}
+                              className="p-1.5 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+                            >
                                 <Github size={16} />
                             </a>
                         )}
                         {project.link && (
-                            <a href={project.link} target="_blank" rel="noopener noreferrer" className="p-1.5 bg-purple-600 hover:bg-purple-500 rounded-full text-white transition-colors">
+                            <a 
+                              href={project.link} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              aria-label={`Visit ${project.title} live site`}
+                              className="p-1.5 bg-purple-600 hover:bg-purple-500 rounded-full text-white transition-colors"
+                            >
                                 <ExternalLink size={16} />
                             </a>
                         )}

@@ -206,7 +206,11 @@ INSTRUCTIONS:
                 <div className="h-2 w-2 rounded-full bg-green-500"></div>
                 <span className="text-sm font-medium text-white">MaxGPT-4.0</span>
             </div>
-            <button onClick={resetChat} className="text-neutral-500 hover:text-white transition-colors">
+            <button 
+                onClick={resetChat} 
+                className="text-neutral-500 hover:text-white transition-colors"
+                aria-label={lang === 'en' ? "Reset chat" : "Reiniciar chat"}
+            >
                 <RefreshCw size={16} />
             </button>
         </div>
@@ -278,6 +282,7 @@ INSTRUCTIONS:
                 <button 
                     onClick={handleSendMessage}
                     disabled={isTyping || !inputValue.trim()}
+                    aria-label={lang === 'en' ? "Send message" : "Enviar mensaje"}
                     className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-neutral-800 rounded-lg text-neutral-500 hover:text-white hover:bg-neutral-700 transition-all disabled:opacity-30 disabled:hover:bg-neutral-800 disabled:hover:text-neutral-500"
                 >
                     <Send size={16} />
