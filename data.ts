@@ -275,14 +275,14 @@ export const data: AppData = {
         "name": "Andrew Papa",
         "role": "Product Lead",
         "company": "Humancore AI",
-        "content": "I like your design for the insight report Max. Nice work, Thanks for running that to completion!"
+        "content": "Me gusta tu diseño para el reporte de insights, Max. ¡Buen trabajo, gracias por llevar eso hasta su finalización!"
       },
       {
         "id": "t2",
         "name": "Robert Stephens",
         "role": "CTO",
         "company": "Humancore AI",
-        "content": "We appreciate all the hard work and value you greatly. (Spot bonus awarded for performance)."
+        "content": "Apreciamos todo tu arduo trabajo y te valoramos enormemente. (Reconocimiento otorgado junto con bono de desempeño)."
       },
       {
         "id": "t3",
@@ -303,7 +303,28 @@ export const data: AppData = {
         "name": "Felipe Lobo",
         "role": "Tech Lead",
         "company": "Humancore AI",
-        "content": "I love the New Diligentsia Design"
+        "content": "Me encanta el nuevo diseño de Diligentsia"
+      },
+      {
+        "id": "t6",
+        "name": "Anibal Royero",
+        "role": "Frontend Developer (Mid)",
+        "company": "Tradeview Markets",
+        "content": "Muchas gracias por la ayuda, el apoyo y las enseñanzas; de verdad me han ayudado full."
+      },
+      {
+        "id": "t7",
+        "name": "Eric Small",
+        "role": "Director of Engineering",
+        "company": "Fairsquare",
+        "content": "“Demo presentation in XPress project is perfect!” — feedback on the SmallBusinessLoans MVP presentation."
+      },
+      {
+        "id": "t8",
+        "name": "Alejandro Cadavid",
+        "role": "Stakeholder",
+        "company": "SmallBusinessLoans",
+        "content": "Excelente presentación de las herramientas de A/B testing para SmallBusinessLoans."
       }
     ],
     "articles": [
