@@ -64,7 +64,7 @@ export const Footer: React.FC<FooterProps> = ({ email, lang }) => {
                             whileHover={{ y: -5 }}
                             className="h-12 w-12 rounded-full border border-neutral-800 bg-neutral-900 flex items-center justify-center text-neutral-400 hover:text-white hover:border-purple-500 hover:bg-purple-500/10 transition-all duration-300"
                         >
-                            <social.icon size={20} />
+                            {social.icon && <social.icon size={20} />}
                         </motion.a>
                     ))}
                 </div>

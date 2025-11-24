@@ -93,7 +93,7 @@ export const BentoGrid: React.FC<BentoGridProps> = ({ summary, currentRole, loca
              <div className="flex animate-scroll whitespace-nowrap gap-8 items-center py-4 px-4">
                 {techStack.map((tech, i) => (
                     <div key={i} className="flex items-center gap-2 text-neutral-400 group-hover:text-white transition-colors">
-                        <tech.icon size={20} />
+                        {tech.icon && <tech.icon size={20} />}
                         <span className="font-mono text-sm font-semibold">{tech.name}</span>
                     </div>
                 ))}
