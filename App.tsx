@@ -7,50 +7,10 @@ import { ProjectCard } from "./components/ProjectCard";
 import { Footer } from "./components/Footer";
 import { Skills } from "./components/Skills";
 import { BlurFade } from "./components/ui/BlurFade";
-import { ProjectItem } from "./types";
 import { data } from "./data";
 import { Globe, Download } from "lucide-react";
 import { generatePDF } from "./utils/generatePDF";
 import { trackEvent } from "./utils/analytics";
-
-const projects: ProjectItem[] = [
-  {
-    id: "1",
-    title: "Humancore AI",
-    description:
-      'An AI-powered "Performance Advisor" that scales executive coaching using real-time multiplayer context and LLMs.',
-    tags: ["Next.js", "TypeScript", "OpenAI", "Figma"],
-    image: "https://humancore.ai/og.png", // Placeholder, will need a real screenshot or keeps using a generic one if unavailable
-    link: "https://humancore.ai/",
-    problem:
-      "Executive coaching is impactful but impossible to scale to every employee manually.",
-    solution:
-      "Built a Next.js core to handle real-time logic and integrated LLMs to provide personalized, science-backed coaching at scale.",
-    impact: [
-      "Architecture built from scratch",
-      "Real-time multiplayer context",
-      "End-to-end design to code",
-    ],
-  },
-  {
-    id: "2",
-    title: "Laika Mascotas",
-    description:
-      "Complete greenfield re-platforming of a leading pet e-commerce to support international expansion.",
-    tags: ["React", "GraphQL", "Architecture", "i18n"],
-    image: "https://laikamascotas.cl/og.png", // Placeholder
-    link: "https://laikamascotas.cl/",
-    problem:
-      "International expansion blocked by an unmaintainable legacy PHP monolith without i18n support.",
-    solution:
-      "Architected a scalable frontend from scratch, leading a squad of 16 devs to replace the legacy system.",
-    impact: [
-      "Successful launch in MX & CL",
-      "Drastic Core Web Vitals improvement",
-      "SEO optimized architecture",
-    ],
-  },
-];
 
 function App() {
   const [lang, setLang] = useState<"en" | "es">("en");
@@ -85,6 +45,7 @@ function App() {
 
   const content = lang === "en" ? data.english : data.spanish;
   const profile = data.profile;
+  const projects = data.projects;
 
   const toggleLanguage = () => {
     const newLang = lang === "en" ? "es" : "en";

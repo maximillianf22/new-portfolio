@@ -78,9 +78,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                     <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50"></div>
                 </div>
                 <div className="flex-1 mx-4">
-                    <div className="bg-neutral-800 rounded flex items-center px-3 py-0.5 text-[10px] text-neutral-500 font-mono truncate">
-                       {project.link ? new URL(project.link).hostname : 'localhost:3000'}
-                    </div>
+                    {project.link && (
+                        <div className="bg-neutral-800 rounded flex items-center px-3 py-0.5 text-[10px] text-neutral-500 font-mono truncate">
+                            {new URL(project.link).hostname}
+                        </div>
+                    )}
                 </div>
             </div>
 

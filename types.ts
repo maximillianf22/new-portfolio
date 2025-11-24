@@ -51,7 +51,6 @@ export interface ProfileData {
   links: {
     linkedin: string;
     github: string;
-    facebook: string;
     whatsapp: string;
   };
 }
@@ -60,6 +59,7 @@ export interface AppData {
   profile: ProfileData;
   spanish: LanguageContent;
   english: LanguageContent;
+  projects: ProjectItem[];
 }
 
 // Legacy types for UI components (can be refactored or kept for compatibility)

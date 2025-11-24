@@ -10,7 +10,6 @@ export const data: AppData = {
     "links": {
       "linkedin": "https://www.linkedin.com/in/maximillian548870154/",
       "github": "https://github.com/maximillianf22",
-      "facebook": "https://www.facebook.com/joshua.fernandez.7758/",
       "whatsapp": "https://api.whatsapp.com/send/?phone=573052607055&text&type=phone_number&app_absent=0"
     }
   },
@@ -233,5 +232,37 @@ export const data: AppData = {
         "content": "We appreciate all the hard work and value you greatly. (Spot bonus awarded for performance)."
       }
     ]
-  }
+  },
+  "projects": [
+    {
+      "id": "1",
+      "title": "Humancore AI",
+      "description": "An AI-powered \"Performance Advisor\" that scales executive coaching using real-time multiplayer context and LLMs.",
+      "tags": ["Next.js", "TypeScript", "OpenAI", "Figma"],
+      "image": "https://humancore.ai/og.png",
+      "link": "https://humancore.ai/",
+      "problem": "Executive coaching is impactful but impossible to scale to every employee manually.",
+      "solution": "Built a Next.js core to handle real-time logic and integrated LLMs to provide personalized, science-backed coaching at scale.",
+      "impact": [
+        "Architecture built from scratch",
+        "Real-time multiplayer context",
+        "End-to-end design to code"
+      ]
+    },
+    {
+      "id": "2",
+      "title": "Laika Mascotas",
+      "description": "Complete greenfield re-platforming of a leading pet e-commerce to support international expansion.",
+      "tags": ["React", "GraphQL", "Architecture", "i18n"],
+      "image": "https://laikamascotas.cl/og.png",
+      "link": "https://laikamascotas.cl/",
+      "problem": "International expansion blocked by an unmaintainable legacy PHP monolith without i18n support.",
+      "solution": "Architected a scalable frontend from scratch, leading a squad of 16 devs to replace the legacy system.",
+      "impact": [
+        "Successful launch in MX & CL",
+        "Drastic Core Web Vitals improvement",
+        "SEO optimized architecture"
+      ]
+    }
+  ]
 };

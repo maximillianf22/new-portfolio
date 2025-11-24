@@ -78,8 +78,12 @@ INSTRUCTIONS:
   };
 
   const callDeepSeekAPI = async (question: string) => {
-    const DEEPSEEK_API_KEY = 'sk-87f18d2938e8441b8e0f286f19730b52';
+    const DEEPSEEK_API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY;
     const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+    
+    if (!DEEPSEEK_API_KEY) {
+      throw new Error('API key not configured');
+    }
     
     const systemPrompt = buildContext();
     
@@ -144,9 +148,17 @@ INSTRUCTIONS:
       }, 20);
     } catch (error) {
       console.error('Error calling DeepSeek API:', error);
-      const errorMessage = lang === 'en' 
-        ? "Sorry, I'm having trouble connecting right now. Please try again later or contact Max directly."
-        : "Lo siento, estoy teniendo problemas para conectarme. Por favor intenta más tarde o contacta a Max directamente.";
+      let errorMessage: string;
+      
+      if (error instanceof Error && error.message === 'API key not configured') {
+        errorMessage = lang === 'en'
+          ? "AI features are currently unavailable. Please contact Max directly for inquiries."
+          : "Las funciones de IA no están disponibles actualmente. Por favor contacta a Max directamente.";
+      } else {
+        errorMessage = lang === 'en' 
+          ? "Sorry, I'm having trouble connecting right now. Please try again later or contact Max directly."
+          : "Lo siento, estoy teniendo problemas para conectarme. Por favor intenta más tarde o contacta a Max directamente.";
+      }
       
       setMessages(prev => prev.map(msg => 
         msg.id === newMessageId ? { ...msg, text: errorMessage, isTyping: false } : msg

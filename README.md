@@ -24,8 +24,12 @@ Portfolio web desarrollado con React, TypeScript y Vite. Incluye secciones de pr
    npm install
    ```
 
-3. Configura las variables de entorno (si es necesario):
-   Crea un archivo `.env.local` y agrega tus claves de API si las necesitas.
+3. Configura las variables de entorno:
+   Crea un archivo `.env` en la raíz del proyecto y agrega:
+   ```
+   VITE_DEEPSEEK_API_KEY=tu_api_key_aqui
+   ```
+   **IMPORTANTE:** No subas el archivo `.env` al repositorio. Ya está incluido en `.gitignore`.
 
 4. Ejecuta el proyecto en modo desarrollo:
 

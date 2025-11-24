@@ -320,51 +320,6 @@ const createPDFDocument = async (data: AppData, lang: 'en' | 'es'): Promise<jsPD
     y += skillsHeight + 1;
   });
 
-  // Education Section - Disabled
-  // if (content.education && content.education.length > 0) {
-  //   checkSpace(25);
-  //   y += 3;
-  //   doc.setFont('helvetica', 'bold');
-  //   doc.setFontSize(12);
-  //   doc.setTextColor(white[0], white[1], white[2]);
-  //   doc.text(lang === 'en' ? 'EDUCATION' : 'EDUCACIÓN', margin, y);
-  //   y += 7;
-
-  //   // Purple accent line
-  //   doc.setDrawColor(purple[0], purple[1], purple[2]);
-  //   doc.setLineWidth(0.5);
-  //   doc.line(margin, y, margin + 40, y);
-  //   y += 7;
-
-  //   content.education.forEach((edu: EducationData, eduIdx: number) => {
-  //     if (eduIdx > 0) {
-  //       y += 2;
-  //     }
-
-  //     checkSpace(15);
-
-  //     // Degree - White, bold
-  //     doc.setFont('helvetica', 'bold');
-  //     doc.setFontSize(10);
-  //     doc.setTextColor(white[0], white[1], white[2]);
-  //     doc.text(edu.degree, margin, y);
-  //     y += 5;
-
-  //     // Institution - Gray
-  //     doc.setFont('helvetica', 'normal');
-  //     doc.setFontSize(9);
-  //     doc.setTextColor(gray[0], gray[1], gray[2]);
-  //     doc.text(edu.institution, margin, y);
-  //     y += 5;
-
-  //     // Year - Purple
-  //     doc.setFont('helvetica', 'bold');
-  //     doc.setFontSize(9);
-  //     doc.setTextColor(purple[0], purple[1], purple[2]);
-  //     doc.text(edu.year, margin, y);
-  //     y += 7;
-  //   });
-  // }
 
   // Footer on all pages
   const totalPages = doc.internal.pages.length - 1;
