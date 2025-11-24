@@ -67,8 +67,17 @@ export const BentoGrid: React.FC<BentoGridProps> = ({ summary, currentRole, loca
 
         {/* Card 3: Location */}
         <BlurFade delay={0.3} className="md:col-span-1 row-span-1 rounded-3xl border border-neutral-800 bg-neutral-900/30 overflow-hidden relative">
-            <div className="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/-74.0817,4.6097,12,0/400x400?access_token=pk.eyJ1IjoiZXhhbXBsZSIsImEiOiJja2xsYnF4cnAwMnc3MnBwZnR4b3J6ZzkzIn0.1')] bg-cover bg-center opacity-50 grayscale hover:grayscale-0 transition-all duration-700"></div>
-            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-neutral-950 to-transparent">
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62669.57277727286!2d-74.8209!3d10.9878!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8ef42d44d12ae605%3A0x2633844581b91117!2sBarranquilla%2C%20Atlantico!5e0!3m2!1sen!2sco!4v1710000000000!5m2!1sen!2sco"
+                width="100%" 
+                height="100%" 
+                style={{ border: 0, opacity: 0.6, filter: 'grayscale(100%) invert(1)' }} 
+                allowFullScreen 
+                loading="lazy" 
+                referrerPolicy="no-referrer-when-downgrade"
+                className="absolute inset-0 w-full h-full scale-125 pointer-events-none"
+            ></iframe>
+            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-neutral-950 to-transparent pointer-events-none">
                 <div className="flex items-center gap-2 text-white">
                     <MapPin size={16} />
                     <span className="font-medium">{location}</span>
@@ -76,8 +85,8 @@ export const BentoGrid: React.FC<BentoGridProps> = ({ summary, currentRole, loca
             </div>
         </BlurFade>
 
-        {/* Card 4: Tech Stack Marquee */}
-        <BlurFade delay={0.4} className="md:col-span-2 row-span-1 rounded-3xl border border-neutral-800 bg-neutral-900/30 overflow-hidden flex flex-col justify-center relative group">
+        {/* Card 4: Tech Stack Marquee - Expanded to fill space */}
+        <BlurFade delay={0.4} className="md:col-span-2 lg:col-span-2 row-span-1 rounded-3xl border border-neutral-800 bg-neutral-900/30 overflow-hidden flex flex-col justify-center relative group">
            <div className="absolute inset-0 bg-gradient-to-r from-neutral-900/90 via-transparent to-neutral-900/90 z-10 pointer-events-none"></div>
            <div className="flex w-full overflow-hidden">
              <div className="flex animate-scroll whitespace-nowrap gap-8 items-center py-4 px-4">
@@ -89,20 +98,6 @@ export const BentoGrid: React.FC<BentoGridProps> = ({ summary, currentRole, loca
                 ))}
              </div>
            </div>
-        </BlurFade>
-
-        {/* Card 5: GitHub Stats / Filler */}
-        <BlurFade delay={0.5} className="md:col-span-2 lg:col-span-2 row-span-1 rounded-3xl border border-neutral-800 bg-neutral-900/30 p-6 flex items-center justify-between group hover:bg-neutral-800/30 transition-colors">
-            <div>
-                <p className="text-neutral-500 text-sm mb-1">Open Source</p>
-                <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-bold text-white">1.2k</span>
-                    <span className="text-sm text-neutral-400">{lang === 'en' ? "Contributions in 2024" : "Contribuciones en 2024"}</span>
-                </div>
-            </div>
-            <div className="h-12 w-12 rounded-full border border-neutral-700 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Code2 className="text-white" size={24} />
-            </div>
         </BlurFade>
 
       </div>
