@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, Tag, Globe } from 'lucide-react';
 import { data } from '../data';
@@ -107,6 +107,9 @@ export const BlogPost: React.FC = () => {
     const savedLang = localStorage.getItem('portfolio-lang') as "en" | "es" | null;
     if (savedLang) {
       setLang(savedLang);
+      document.documentElement.lang = savedLang;
+    } else {
+      document.documentElement.lang = "en";
     }
   }, []);
   
@@ -122,6 +125,7 @@ export const BlogPost: React.FC = () => {
     const newLang = lang === "en" ? "es" : "en";
     setLang(newLang);
     localStorage.setItem('portfolio-lang', newLang);
+    document.documentElement.lang = newLang;
   };
 
   if (!article) {
@@ -192,6 +196,26 @@ export const BlogPost: React.FC = () => {
           <div className="prose prose-invert prose-purple max-w-none">
             <div className="text-lg text-neutral-300 leading-relaxed mb-8 border-l-4 border-purple-500/50 pl-6 italic">
               {article.description}
+            </div>
+            
+            <div className="mb-8 p-6 bg-neutral-900/50 border border-neutral-800 rounded-xl">
+              <p className="text-neutral-400 text-sm mb-2">
+                {lang === 'en' ? "Explore more articles:" : "Explora más artículos:"}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {articles.filter(a => a.id !== article.id).slice(0, 3).map((relatedArticle) => {
+                  const articleSlug = relatedArticle.url?.split('/').pop() || '';
+                  return (
+                    <Link
+                      key={relatedArticle.id}
+                      to={relatedArticle.url || '#'}
+                      className="text-purple-400 hover:text-purple-300 text-sm underline underline-offset-2 transition-colors"
+                    >
+                      {relatedArticle.title}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
 
             {article.content ? (

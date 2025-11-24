@@ -22,10 +22,12 @@ export const Home: React.FC = () => {
   
   React.useEffect(() => {
     trackEvent('page_visited', { path: window.location.pathname });
+    document.documentElement.lang = lang;
   }, []);
   
   React.useEffect(() => {
     localStorage.setItem('portfolio-lang', lang);
+    document.documentElement.lang = lang;
   }, [lang]);
 
   React.useEffect(() => {

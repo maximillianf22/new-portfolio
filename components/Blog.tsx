@@ -56,10 +56,16 @@ export const Blog: React.FC<BlogProps> = ({ articles, lang }) => {
             <h2 className="text-3xl font-bold mb-4 text-white/90">
               {lang === 'en' ? "Blog" : "Blog"}
             </h2>
-            <p className="text-neutral-400">
+            <p className="text-neutral-400 mb-4">
               {lang === 'en' 
-                ? "Technical articles, insights, and thoughts on frontend architecture, AI integration, and product development."
-                : "Artículos técnicos, insights y reflexiones sobre arquitectura frontend, integración de IA y desarrollo de productos."
+                ? "Technical articles, insights, and thoughts on frontend architecture, AI integration, and product development. Explore in-depth guides on web accessibility, LLM integration strategies, legacy migration patterns, and modern React architecture."
+                : "Artículos técnicos, insights y reflexiones sobre arquitectura frontend, integración de IA y desarrollo de productos. Explora guías detalladas sobre accesibilidad web, estrategias de integración de LLMs, patrones de migración de sistemas legacy y arquitectura moderna con React."
+              }
+            </p>
+            <p className="text-neutral-500 text-sm">
+              {lang === 'en' 
+                ? "Learn from real-world production experiences, best practices, and lessons learned building scalable applications."
+                : "Aprende de experiencias reales en producción, mejores prácticas y lecciones aprendidas construyendo aplicaciones escalables."
               }
             </p>
           </div>

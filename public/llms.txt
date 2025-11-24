@@ -1,0 +1,28 @@
+# llms.txt - Information about maximillianfer.dev
+
+Maximillian Fernandez Portfolio Website
+https://maximillianfer.dev
+
+## About
+This is the personal portfolio website of Maximillian Fernandez, a Senior Software Engineer and Frontend Architect with 10+ years of experience specializing in Next.js, React, TypeScript, AI Engineering, and UX/UI design.
+
+## Content
+- Personal portfolio showcasing projects, experience, and skills
+- Technical blog articles about web development, accessibility, AI integration, and software architecture
+- Bilingual content (English and Spanish)
+- Projects include Humancore AI, Laika Mascotas, and IKATECH Solutions
+
+## Structure
+- Homepage: Main portfolio with hero section, skills, experience, projects, and blog
+- Blog posts: Technical articles accessible via /blog/:slug routes
+- Projects: Showcase of major work with descriptions and links
+
+## Technologies
+Built with React, TypeScript, Vite, Tailwind CSS, Framer Motion, and React Router.
+
+## Contact
+Email: maximillianf22@gmail.com
+Location: Barranquilla, Colombia
+LinkedIn: https://www.linkedin.com/in/maximillian548870154/
+GitHub: https://github.com/maximillianf22
+
