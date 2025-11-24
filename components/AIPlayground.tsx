@@ -114,6 +114,7 @@ PROFILE:
 - Name: ${profile.name}
 - Location: ${profile.location}
 - Email: ${profile.email}
+- Phone: +573052607055
 - Headline: ${content.headline}
 - Summary: ${content.summary}
 
@@ -127,8 +128,9 @@ INSTRUCTIONS:
 - Answer questions about Max's experience, skills, availability, and projects
 - Be professional, friendly, and concise
 - If asked about availability or hiring, mention he's open to new opportunities
+- If asked for contact information or phone number, provide: +573052607055
 - Always respond in ${lang === 'en' ? 'English' : 'Spanish'}
-- If you don't know something specific, suggest contacting Max directly at ${profile.email}`;
+- If you don't know something specific, suggest contacting Max directly at ${profile.email} or +573052607055`;
   };
 
   const getSimulatedResponse = (question: string): string => {
@@ -147,8 +149,14 @@ INSTRUCTIONS:
     
     if (questionLower.includes('disponib') || questionLower.includes('available') || questionLower.includes('freelance') || questionLower.includes('proyecto')) {
       return lang === 'en'
-        ? `Yes! Max is open to new opportunities, freelance projects, and collaborations. You can reach him directly at ${profile.email} or through his LinkedIn profile.`
-        : `¡Sí! Max está abierto a nuevas oportunidades, proyectos freelance y colaboraciones. Puedes contactarlo directamente en ${profile.email} o a través de su perfil de LinkedIn.`;
+        ? `Yes! Max is open to new opportunities, freelance projects, and collaborations. You can reach him directly at ${profile.email} or +573052607055.`
+        : `¡Sí! Max está abierto a nuevas oportunidades, proyectos freelance y colaboraciones. Puedes contactarlo directamente en ${profile.email} o +573052607055.`;
+    }
+    
+    if (questionLower.includes('telefono') || questionLower.includes('phone') || questionLower.includes('numero') || questionLower.includes('number') || questionLower.includes('contacto') || questionLower.includes('contact')) {
+      return lang === 'en'
+        ? `You can contact Max at:\n\n📧 Email: ${profile.email}\n📱 Phone: +573052607055\n\nFeel free to reach out for opportunities, collaborations, or any questions!`
+        : `Puedes contactar a Max en:\n\n📧 Email: ${profile.email}\n📱 Teléfono: +573052607055\n\n¡Siéntete libre de contactarlo para oportunidades, colaboraciones o cualquier pregunta!`;
     }
     
     if (questionLower.includes('github') || questionLower.includes('repositorio') || questionLower.includes('code')) {
