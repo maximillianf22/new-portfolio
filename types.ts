@@ -23,6 +23,15 @@ export interface SkillSet {
   "Tools & Methods": string;
 }
 
+export interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  company: string;
+  content: string;
+  image?: string;
+}
+
 export interface LanguageContent {
   headline: string;
   sub_headline: string;
@@ -30,6 +39,7 @@ export interface LanguageContent {
   experience: ExperienceData[];
   skills: SkillSet;
   education: EducationData[];
+  testimonials?: Testimonial[];
 }
 
 export interface ProfileData {
@@ -40,7 +50,9 @@ export interface ProfileData {
   avatar: string;
   links: {
     linkedin: string;
-    portfolio: string;
+    github: string;
+    facebook: string;
+    whatsapp: string;
   };
 }
 
@@ -58,6 +70,10 @@ export interface ProjectItem {
   tags: string[];
   image: string;
   link?: string;
+  github?: string;
+  problem?: string;
+  solution?: string;
+  impact?: string[];
 }
 
 export interface SocialLink {

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Github, Twitter, Linkedin, Copy, Check } from 'lucide-react';
+import { Github, Facebook, Linkedin, Copy, Check, MessageCircle } from 'lucide-react';
 import { SocialLink } from '../types';
+import { data } from '../data';
 
 interface FooterProps {
     email: string;
@@ -9,9 +10,10 @@ interface FooterProps {
 }
 
 const socials: SocialLink[] = [
-    { label: 'GitHub', href: 'https://github.com/maxfernandez', icon: Github },
-    { label: 'Twitter', href: '#', icon: Twitter },
-    { label: 'LinkedIn', href: '#', icon: Linkedin },
+    { label: 'GitHub', href: data.profile.links.github, icon: Github },
+    { label: 'LinkedIn', href: data.profile.links.linkedin, icon: Linkedin },
+    { label: 'Facebook', href: data.profile.links.facebook, icon: Facebook },
+    { label: 'WhatsApp', href: data.profile.links.whatsapp, icon: MessageCircle },
 ];
 
 export const Footer: React.FC<FooterProps> = ({ email, lang }) => {

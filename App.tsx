@@ -15,19 +15,39 @@ import { generatePDF } from "./utils/generatePDF";
 const projects: ProjectItem[] = [
   {
     id: "1",
-    title: "Neon Nexus",
+    title: "Humancore AI",
     description:
-      "A cyberpunk-inspired DeFi dashboard with real-time WebSocket data visualization.",
-    tags: ["React", "D3.js", "Socket.io"],
-    image: "https://picsum.photos/800/600?grayscale&blur=2",
+      'An AI-powered "Performance Advisor" that scales executive coaching using real-time multiplayer context and LLMs.',
+    tags: ["Next.js", "TypeScript", "OpenAI", "Figma"],
+    image: "https://humancore.ai/og.png", // Placeholder, will need a real screenshot or keeps using a generic one if unavailable
+    link: "https://humancore.ai/",
+    problem:
+      "Executive coaching is impactful but impossible to scale to every employee manually.",
+    solution:
+      "Built a Next.js core to handle real-time logic and integrated LLMs to provide personalized, science-backed coaching at scale.",
+    impact: [
+      "Architecture built from scratch",
+      "Real-time multiplayer context",
+      "End-to-end design to code",
+    ],
   },
   {
     id: "2",
-    title: "Vocalize AI",
+    title: "Laika Mascotas",
     description:
-      "Text-to-speech platform utilizing the latest Gemini Audio models for realistic voice synthesis.",
-    tags: ["Next.js", "Gemini API", "Python"],
-    image: "https://picsum.photos/800/601?grayscale&blur=2",
+      "Complete greenfield re-platforming of a leading pet e-commerce to support international expansion.",
+    tags: ["React", "GraphQL", "Architecture", "i18n"],
+    image: "https://laikamascotas.cl/og.png", // Placeholder
+    link: "https://laikamascotas.cl/",
+    problem:
+      "International expansion blocked by an unmaintainable legacy PHP monolith without i18n support.",
+    solution:
+      "Architected a scalable frontend from scratch, leading a squad of 16 devs to replace the legacy system.",
+    impact: [
+      "Successful launch in MX & CL",
+      "Drastic Core Web Vitals improvement",
+      "SEO optimized architecture",
+    ],
   },
 ];
 
