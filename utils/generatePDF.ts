@@ -1,399 +1,407 @@
 import jsPDF from 'jspdf';
-import { AppData, ExperienceData, SkillSet } from '../types';
+import { AppData, ExperienceData, SkillSet, EducationData } from '../types';
 
 interface PDFOptions {
   data: AppData;
   lang: 'en' | 'es';
 }
 
-export const generatePDF = ({ data, lang }: PDFOptions) => {
+// Export function to generate PDF blob
+export const generatePDFBlob = async ({ data, lang }: PDFOptions): Promise<Blob> => {
+  try {
+    const doc = await createPDFDocument(data, lang);
+    const blob = doc.output('blob');
+    return blob;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Internal function to create PDF document
+const createPDFDocument = async (data: AppData, lang: 'en' | 'es'): Promise<jsPDF> => {
+  const profile = data.profile;
+  const content = lang === 'en' ? data.english : data.spanish;
+
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
     format: 'a4',
-    compress: true
+    compress: true,
   });
 
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  
-  // Two-column layout
-  const leftColumnWidth = 70; // Dark purple sidebar
-  const rightColumnStart = leftColumnWidth;
-  const rightColumnWidth = pageWidth - leftColumnWidth;
-  const margin = 10;
-  const leftMargin = margin;
-  const rightMargin = rightColumnStart + margin;
-  
-  let leftY = margin;
-  let rightY = margin;
-
-  // Helper function to convert hex to RGB
-  const hexToRgb = (hex: string): [number, number, number] => {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result
-      ? [
-          parseInt(result[1], 16),
-          parseInt(result[2], 16),
-          parseInt(result[3], 16)
-        ]
-      : [0, 0, 0];
-  };
-
-  // Color scheme: Purple neon and black
-  const colorHex = {
-    darkPurple: '#1a0a2e', // Very dark purple/black
-    neonPurple: '#a855f7', // Bright neon purple
-    neonPurpleLight: '#c084fc', // Lighter neon purple
-    white: '#ffffff',
-    textDark: '#1a1a1a',
-    textGray: '#4a4a4a',
-    textLight: '#e5e7eb',
-    bgLight: '#f3f4f6'
-  };
-
-  const colors = {
-    darkPurple: hexToRgb(colorHex.darkPurple),
-    neonPurple: hexToRgb(colorHex.neonPurple),
-    neonPurpleLight: hexToRgb(colorHex.neonPurpleLight),
-    white: hexToRgb(colorHex.white),
-    textDark: hexToRgb(colorHex.textDark),
-    textGray: hexToRgb(colorHex.textGray),
-    textLight: hexToRgb(colorHex.textLight),
-    bgLight: hexToRgb(colorHex.bgLight)
-  };
-
-  // Helper function to draw filled rectangle
-  const drawRect = (x: number, y: number, w: number, h: number, color: [number, number, number]) => {
-    doc.setFillColor(color[0], color[1], color[2]);
-    doc.rect(x, y, w, h, 'F');
-  };
-
-  // Helper function to draw circle
-  const drawCircle = (x: number, y: number, radius: number, color: [number, number, number]) => {
-    doc.setFillColor(color[0], color[1], color[2]);
-    doc.ellipse(x, y, radius, radius, 'F');
-  };
-
-  // Helper function to add text with styling
-  const addText = (text: string, x: number, y: number, options: {
-    fontSize?: number;
-    fontStyle?: 'normal' | 'bold';
-    color?: [number, number, number];
-    align?: 'left' | 'center' | 'right';
-  } = {}) => {
-    const { fontSize = 12, fontStyle = 'normal', color = colors.textDark, align = 'left' } = options;
-    doc.setFontSize(fontSize);
-    doc.setFont('helvetica', fontStyle);
-    doc.setTextColor(color[0], color[1], color[2]);
-    doc.text(text, x, y, { align });
-  };
-
-  // Helper function to check page break for right column
-  const checkPageBreak = (requiredHeight: number, isLeft: boolean = false) => {
-    const currentY = isLeft ? leftY : rightY;
-    if (currentY + requiredHeight > pageHeight - margin) {
-      doc.addPage();
-      // Redraw left column background on new page
-      drawRect(0, 0, leftColumnWidth, pageHeight, colors.darkPurple);
-      if (isLeft) {
-        leftY = margin;
-      } else {
-        rightY = margin;
+  // Load profile image
+  let profileImage: string | null = null;
+  try {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    const imageUrl = profile.avatar.startsWith('/') 
+      ? `${window.location.origin}${profile.avatar}` 
+      : profile.avatar;
+    
+    await new Promise<void>((resolve, reject) => {
+      img.onload = () => resolve();
+      img.onerror = () => {
+        console.warn('Could not load profile image');
+        resolve(); // Continue without image
+      };
+      img.src = imageUrl;
+    });
+    
+    if (img.complete && img.naturalWidth > 0) {
+      const canvas = document.createElement('canvas');
+      const maxSize = 200; // Max size for PDF
+      const scale = Math.min(maxSize / img.width, maxSize / img.height);
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        // Draw image without border radius
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        profileImage = canvas.toDataURL('image/jpeg', 0.9);
       }
+    }
+  } catch (error) {
+    console.warn('Could not load profile image:', error);
+  }
+
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  const margin = 15;
+  const contentW = pageW - margin * 2;
+  let y = margin + 5;
+
+  // Colors matching website
+  const darkBg: [number, number, number] = [13, 13, 13]; // #0d0d0d
+  const purple: [number, number, number] = [139, 92, 246];
+  const white: [number, number, number] = [255, 255, 255];
+  const gray: [number, number, number] = [163, 163, 163];
+  const darkGray: [number, number, number] = [38, 38, 38];
+
+  const newPage = () => {
+    doc.addPage();
+    y = margin + 5;
+    // Apply dark background to new page
+    doc.setFillColor(darkBg[0], darkBg[1], darkBg[2]);
+    doc.rect(0, 0, pageW, pageH, 'F');
+  };
+
+  const checkSpace = (h: number) => {
+    if (y + h > pageH - margin - 15) {
+      newPage();
       return true;
     }
     return false;
   };
 
-  const profile = data.profile;
-  const content = lang === 'en' ? data.english : data.spanish;
+  // Dark background for entire page
+  doc.setFillColor(darkBg[0], darkBg[1], darkBg[2]);
+  doc.rect(0, 0, pageW, pageH, 'F');
 
-  // Draw left column background (dark purple/black)
-  drawRect(0, 0, leftColumnWidth, pageHeight, colors.darkPurple);
-
-  // ========== LEFT COLUMN (Dark Purple Sidebar) ==========
+  // Header with gradient overlay
+  const headerHeight = 40;
+  const headerPadding = 3; // Reduced padding for header content
   
-  // Profile picture placeholder (circle)
-  const profilePicRadius = 18;
-  const profilePicX = leftColumnWidth / 2;
-  const profilePicY = leftY + profilePicRadius + 8;
+  doc.setFillColor(darkBg[0], darkBg[1], darkBg[2]);
+  doc.rect(0, 0, pageW, headerHeight, 'F');
   
-  // White circle background for profile pic with border
-  drawCircle(profilePicX, profilePicY, profilePicRadius, colors.white);
-  // Inner circle with dark purple
-  drawCircle(profilePicX, profilePicY, profilePicRadius - 1.5, colors.darkPurple);
+  // Gradient overlay: blue to purple (equivalent to bg-gradient-to-br from-blue-500/20 to-purple-500/20)
+  // Simplified gradient without visible lines
+  doc.setFillColor(59, 130, 246); // blue-500
+  doc.setGState(doc.GState({ opacity: 0.2 }));
+  doc.rect(0, 0, pageW, headerHeight, 'F');
   
-  leftY = profilePicY + profilePicRadius + 20;
+  // Purple overlay for gradient effect
+  doc.setFillColor(purple[0], purple[1], purple[2]);
+  doc.setGState(doc.GState({ opacity: 0.2 }));
+  doc.rect(0, 0, pageW, headerHeight, 'F');
+  doc.setGState(doc.GState({ opacity: 1 }));
 
-  // Name in uppercase, white, bold, larger
-  const nameParts = profile.name.split(' ');
-  nameParts.forEach((part, idx) => {
-    addText(part.toUpperCase(), leftColumnWidth / 2, leftY, {
-      fontSize: 16,
-      fontStyle: 'bold',
-      color: colors.white,
-      align: 'center'
-    });
-    leftY += 7;
-  });
-  leftY += 5;
+  // Name - Large, bold, white (moved up)
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(26);
+  doc.setTextColor(white[0], white[1], white[2]);
+  const nameLines = doc.splitTextToSize(profile.name.toUpperCase(), contentW);
+  const nameHeight = nameLines.length * 8;
+  doc.text(nameLines, margin, y + headerPadding);
+  y += nameHeight + 1; // Reduced spacing after name
 
-  // Headline/Title in uppercase, neon purple
-  addText(content.headline.toUpperCase(), leftColumnWidth / 2, leftY, {
-    fontSize: 9,
-    fontStyle: 'bold',
-    color: colors.neonPurpleLight,
-    align: 'center'
-  });
-  leftY += 12;
+  // Profile image on the right side of header (after name)
+  if (profileImage) {
+    const imgWidth = 40; // Width in mm
+    const imgHeight = 55; // Height in mm
+    const imgX = pageW - margin - imgWidth;
+    const imgY = headerPadding;
+    
+    // Add image without border radius
+    try {
+      doc.addImage(profileImage, 'JPEG', imgX, imgY, imgWidth, imgHeight, undefined, 'FAST');
+    } catch (error) {
+      console.warn('Could not add image to PDF:', error);
+    }
+  }
 
-  // Contact Information Section
-  const contactTitleHeight = 5;
-  drawRect(leftMargin, leftY - 3, leftColumnWidth - (leftMargin * 2), contactTitleHeight, colors.neonPurpleLight);
-  addText((lang === 'en' ? 'CONTACT' : 'CONTACTO').toUpperCase(), leftColumnWidth / 2, leftY, {
-    fontSize: 10,
-    fontStyle: 'bold',
-    color: colors.white,
-    align: 'center'
-  });
-  leftY += 10;
+  // Headline - Purple (moved up)
+  doc.setFontSize(13);
+  doc.setTextColor(purple[0], purple[1], purple[2]);
+  const headlineLines = doc.splitTextToSize(content.headline, contentW);
+  const headlineHeight = headlineLines.length * 5;
+  doc.text(headlineLines, margin, y);
+  y += headlineHeight + 4; // Reduced spacing after headline
 
-  // Contact items with icons (using symbols)
-  const contactItems = [
-    { icon: '📱', text: profile.phone },
-    { icon: '✉️', text: profile.email },
-    { icon: '🌐', text: profile.email.split('@')[1] || '' },
-    { icon: '📍', text: profile.location }
-  ].filter(item => item.text);
+  // Contact info - Gray, smaller (moved up)
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(gray[0], gray[1], gray[2]);
+  const contact = `${profile.email} • ${profile.phone} • ${profile.location}`;
+  doc.text(contact, margin, y);
+  y += 4 + headerPadding; // Reduced padding at bottom of header
 
-  contactItems.forEach((item) => {
-    checkPageBreak(8, true);
-    const contactText = `${item.icon} ${item.text}`;
-    const contactLines = doc.splitTextToSize(contactText, leftColumnWidth - (leftMargin * 2));
-    contactLines.forEach((line: string) => {
-      addText(line, leftColumnWidth / 2, leftY, {
-        fontSize: 8,
-        color: colors.textLight,
-        align: 'center'
-      });
-      leftY += 4;
-    });
-    leftY += 2;
-  });
+  // Professional Summary Section
+  checkSpace(25);
+  y += 10;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(12);
+  doc.setTextColor(white[0], white[1], white[2]);
+  doc.text(
+    lang === 'en' ? 'PROFESSIONAL SUMMARY' : 'RESUMEN PROFESIONAL',
+    margin,
+    y
+  );
+  y += 7;
 
-  // ========== RIGHT COLUMN (White Content Area) ==========
-  
-  rightY = margin + 5;
-
-  // ABOUT ME / SUMMARY Section
-  checkPageBreak(30, false);
-  
-  // Section title with purple background highlight
-  const sectionTitleHeight = 6;
-  drawRect(rightColumnStart + margin, rightY - 4, rightColumnWidth - (margin * 2), sectionTitleHeight, colors.neonPurpleLight);
-  
-  addText((lang === 'en' ? 'ABOUT ME' : 'SOBRE MÍ').toUpperCase(), rightColumnStart + margin + 3, rightY, {
-    fontSize: 12,
-    fontStyle: 'bold',
-    color: colors.white,
-    align: 'left'
-  });
-  rightY += 10;
+  // Purple accent line
+  doc.setDrawColor(purple[0], purple[1], purple[2]);
+  doc.setLineWidth(0.5);
+  doc.line(margin, y, margin + 40, y);
+  y += 6;
 
   // Summary text
-  const summaryLines = doc.splitTextToSize(content.summary, rightColumnWidth - (margin * 3));
-  summaryLines.forEach((line: string) => {
-    addText(line, rightColumnStart + margin, rightY, {
-      fontSize: 9,
-      color: colors.textDark,
-      align: 'left'
-    });
-    rightY += 4.5;
-  });
-  rightY += 8;
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(gray[0], gray[1], gray[2]);
+  const summaryLines = doc.splitTextToSize(content.summary, contentW);
+  const summaryHeight = summaryLines.length * 4.8;
+  doc.text(summaryLines, margin, y);
+  y += summaryHeight + 10;
 
-  // SKILLS Section
-  checkPageBreak(40, false);
-  
-  // Section title
-  drawRect(rightColumnStart + margin, rightY - 4, rightColumnWidth - (margin * 2), sectionTitleHeight, colors.neonPurpleLight);
-  addText((lang === 'en' ? 'SKILLS' : 'HABILIDADES').toUpperCase(), rightColumnStart + margin + 3, rightY, {
-    fontSize: 12,
-    fontStyle: 'bold',
-    color: colors.white,
-    align: 'left'
-  });
-  rightY += 10;
+  // Professional Experience Section
+  checkSpace(25);
+  y += 2;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(12);
+  doc.setTextColor(white[0], white[1], white[2]);
+  doc.text(
+    lang === 'en' ? 'PROFESSIONAL EXPERIENCE' : 'EXPERIENCIA PROFESIONAL',
+    margin,
+    y
+  );
+  y += 7;
 
-  // Skills with progress bars
-  const skills = content.skills as SkillSet;
-  const skillEntries = Object.entries(skills);
-  
-  skillEntries.forEach(([category, items]) => {
-    checkPageBreak(15, false);
-    
-    // Category name
-    addText(category, rightColumnStart + margin, rightY, {
-      fontSize: 10,
-      fontStyle: 'bold',
-      color: colors.textDark,
-      align: 'left'
-    });
-    rightY += 5;
+  // Purple accent line
+  doc.setDrawColor(purple[0], purple[1], purple[2]);
+  doc.setLineWidth(0.5);
+  doc.line(margin, y, margin + 40, y);
+  y += 7;
 
-    // Skills list
-    const skillList = typeof items === 'string' ? items.split(', ') : [];
-    const skillsText = skillList.join(' • ');
-    const skillLines = doc.splitTextToSize(skillsText, rightColumnWidth - (margin * 3));
-    
-    skillLines.forEach((line: string) => {
-      addText(line, rightColumnStart + margin, rightY, {
-        fontSize: 8.5,
-        color: colors.textGray,
-        align: 'left'
-      });
-      rightY += 4;
-    });
-    rightY += 6;
-  });
-
-  // EXPERIENCES Section
-  checkPageBreak(30, false);
-  
-  // Section title
-  drawRect(rightColumnStart + margin, rightY - 4, rightColumnWidth - (margin * 2), sectionTitleHeight, colors.neonPurpleLight);
-  addText((lang === 'en' ? 'EXPERIENCES' : 'EXPERIENCIAS').toUpperCase(), rightColumnStart + margin + 3, rightY, {
-    fontSize: 12,
-    fontStyle: 'bold',
-    color: colors.white,
-    align: 'left'
-  });
-  rightY += 10;
-
-  // Timeline for experiences
-  const timelineX = rightColumnStart + margin + 3;
-  let timelineStartY = rightY;
-  let lastExpY = rightY;
-
-  content.experience.forEach((exp: ExperienceData, index: number) => {
-    checkPageBreak(35, false);
-    
-    // Timeline dot
-    drawCircle(timelineX, rightY + 3, 2, colors.neonPurple);
-    
-    // Draw timeline line (except for first item)
-    if (index > 0) {
-      doc.setDrawColor(colors.neonPurple[0], colors.neonPurple[1], colors.neonPurple[2]);
-      doc.setLineWidth(0.5);
-      doc.line(timelineX, lastExpY + 5, timelineX, rightY - 2);
+  content.experience.forEach((exp: ExperienceData, idx: number) => {
+    if (idx > 0) {
+      y += 3;
     }
-    
-    // Company and dates
-    addText(`${exp.company} ${exp.dates}`, timelineX + 6, rightY, {
-      fontSize: 10,
-      fontStyle: 'bold',
-      color: colors.textDark,
-      align: 'left'
-    });
-    rightY += 5;
 
-    // Role
-    addText(exp.role, timelineX + 6, rightY, {
-      fontSize: 9,
-      fontStyle: 'bold',
-      color: colors.textGray,
-      align: 'left'
-    });
-    rightY += 5;
+    checkSpace(35);
 
-    // Highlights
-    exp.highlights.forEach((highlight: string) => {
-      checkPageBreak(8, false);
-      const highlightLines = doc.splitTextToSize(highlight, rightColumnWidth - (margin * 3) - 10);
-      highlightLines.forEach((line: string) => {
-        addText(`• ${line}`, timelineX + 6, rightY, {
-          fontSize: 8.5,
-          color: colors.textGray,
-          align: 'left'
-        });
-        rightY += 4;
-      });
-      rightY += 2;
+      // Company badge - Dark gray background with rounded corners and border
+      const badgeY = y;
+      const badgeHeight = 7; // Increased height
+      
+      // Background - #1c1c1c
+      doc.setFillColor(28, 28, 28); // #1c1c1c
+      doc.roundedRect(margin, badgeY - 3, contentW, badgeHeight, 2, 2, 'F');
+      
+      // Border - #535353
+      doc.setDrawColor(83, 83, 83); // #535353
+      doc.setLineWidth(0.3);
+      doc.roundedRect(margin, badgeY - 3, contentW, badgeHeight, 2, 2, 'S');
+
+      // Company name - Left aligned, centered vertically in badge
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(purple[0], purple[1], purple[2]);
+      // Center text vertically in badge with slight offset upward
+      doc.text(exp.company, margin + 3, badgeY - 3 + badgeHeight / 2 + 1.5);
+      y += badgeHeight + 2;
+
+    // Role - White, bold
+    doc.setFontSize(10.5);
+    doc.setTextColor(white[0], white[1], white[2]);
+    doc.text(exp.role, margin, y);
+    y += 6;
+
+    // Dates and Location - Gray
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(gray[0], gray[1], gray[2]);
+    doc.text(exp.dates, margin, y);
+    const locW = doc.getTextWidth(exp.location);
+    doc.text(exp.location, pageW - margin - locW, y);
+    y += 6;
+
+    // Highlights with purple bullets
+    exp.highlights.forEach((hl: string, hlIdx: number) => {
+      checkSpace(8);
+
+      if (hlIdx > 0) {
+        y += 1;
+      }
+
+      // Purple bullet circle (rounded)
+      doc.setFillColor(purple[0], purple[1], purple[2]);
+      doc.circle(margin + 2, y - 1, 1.8, 'F');
+
+      // Text
+      doc.setFontSize(9.5);
+      doc.setTextColor(gray[0], gray[1], gray[2]);
+      const hlLines = doc.splitTextToSize(hl, contentW - 8);
+      const hlHeight = hlLines.length * 4.2;
+      doc.text(hlLines, margin + 6, y);
+      y += hlHeight + 2;
     });
 
-    lastExpY = rightY;
-    rightY += 8;
+    y += 4;
   });
 
-  // EDUCATION Section
-  if (content.education && content.education.length > 0) {
-    checkPageBreak(25, false);
-    
-    // Section title
-    drawRect(rightColumnStart + margin, rightY - 4, rightColumnWidth - (margin * 2), sectionTitleHeight, colors.neonPurpleLight);
-    addText((lang === 'en' ? 'EDUCATION' : 'EDUCACIÓN').toUpperCase(), rightColumnStart + margin + 3, rightY, {
-      fontSize: 12,
-      fontStyle: 'bold',
-      color: colors.white,
-      align: 'left'
-    });
-    rightY += 10;
+  // Technical Skills Section
+  checkSpace(25);
+  y += 3;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(12);
+  doc.setTextColor(white[0], white[1], white[2]);
+  doc.text(
+    lang === 'en' ? 'TECHNICAL SKILLS' : 'HABILIDADES TÉCNICAS',
+    margin,
+    y
+  );
+  y += 7;
 
-    content.education.forEach((edu) => {
-      checkPageBreak(15, false);
-      
-      // Year
-      addText(edu.year, rightColumnStart + margin, rightY, {
-        fontSize: 10,
-        fontStyle: 'bold',
-        color: colors.neonPurple,
-        align: 'left'
-      });
-      rightY += 5;
+  // Purple accent line
+  doc.setDrawColor(purple[0], purple[1], purple[2]);
+  doc.setLineWidth(0.5);
+  doc.line(margin, y, margin + 40, y);
+  y += 7;
 
-      // Institution
-      addText(edu.institution, rightColumnStart + margin, rightY, {
-        fontSize: 10,
-        fontStyle: 'bold',
-        color: colors.textDark,
-        align: 'left'
-      });
-      rightY += 5;
+  // Skills in card-like format
+  Object.entries(content.skills as SkillSet).forEach(([category, items], catIdx: number) => {
+    if (catIdx > 0) {
+      y += 2;
+    }
 
-      // Degree
-      addText(edu.degree, rightColumnStart + margin, rightY, {
-        fontSize: 9,
-        color: colors.textGray,
-        align: 'left'
-      });
-      rightY += 8;
-    });
-  }
-
-  // Footer for all pages
-  const totalPages = doc.getNumberOfPages();
-  for (let i = 1; i <= totalPages; i++) {
-    doc.setPage(i);
-    
-    // Redraw left column background
-    drawRect(0, 0, leftColumnWidth, pageHeight, colors.darkPurple);
-    
-    // Footer text in right column
-    doc.setFontSize(7);
-    doc.setTextColor(colors.textGray[0], colors.textGray[1], colors.textGray[2]);
+    // Calculate actual space needed before checking
     doc.setFont('helvetica', 'normal');
-    doc.text(
-      `${i} / ${totalPages}`,
-      pageWidth - margin,
-      pageHeight - 5,
-      { align: 'right' }
-    );
+    doc.setFontSize(8);
+    const skillsText = typeof items === 'string' ? items : items.join(', ');
+    const skillsLines = doc.splitTextToSize(skillsText, contentW);
+    const skillsHeight = skillsLines.length * 4.2;
+    const totalHeight = 3 + skillsHeight + 3; // Category title + skills text + spacing
+
+    checkSpace(totalHeight);
+
+    // Category title - White
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(white[0], white[1], white[2]);
+    doc.text(category + ':', margin, y);
+    y += 5.5;
+
+    // Skills as text
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(gray[0], gray[1], gray[2]);
+    doc.text(skillsLines, margin, y);
+    y += skillsHeight + 1;
+  });
+
+  // Education Section - Disabled
+  // if (content.education && content.education.length > 0) {
+  //   checkSpace(25);
+  //   y += 3;
+  //   doc.setFont('helvetica', 'bold');
+  //   doc.setFontSize(12);
+  //   doc.setTextColor(white[0], white[1], white[2]);
+  //   doc.text(lang === 'en' ? 'EDUCATION' : 'EDUCACIÓN', margin, y);
+  //   y += 7;
+
+  //   // Purple accent line
+  //   doc.setDrawColor(purple[0], purple[1], purple[2]);
+  //   doc.setLineWidth(0.5);
+  //   doc.line(margin, y, margin + 40, y);
+  //   y += 7;
+
+  //   content.education.forEach((edu: EducationData, eduIdx: number) => {
+  //     if (eduIdx > 0) {
+  //       y += 2;
+  //     }
+
+  //     checkSpace(15);
+
+  //     // Degree - White, bold
+  //     doc.setFont('helvetica', 'bold');
+  //     doc.setFontSize(10);
+  //     doc.setTextColor(white[0], white[1], white[2]);
+  //     doc.text(edu.degree, margin, y);
+  //     y += 5;
+
+  //     // Institution - Gray
+  //     doc.setFont('helvetica', 'normal');
+  //     doc.setFontSize(9);
+  //     doc.setTextColor(gray[0], gray[1], gray[2]);
+  //     doc.text(edu.institution, margin, y);
+  //     y += 5;
+
+  //     // Year - Purple
+  //     doc.setFont('helvetica', 'bold');
+  //     doc.setFontSize(9);
+  //     doc.setTextColor(purple[0], purple[1], purple[2]);
+  //     doc.text(edu.year, margin, y);
+  //     y += 7;
+  //   });
+  // }
+
+  // Footer on all pages
+  const totalPages = doc.internal.pages.length - 1;
+  for (let p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    
+    // Footer line
+    doc.setDrawColor(purple[0], purple[1], purple[2]);
+    doc.setLineWidth(0.3);
+    doc.setGState(doc.GState({ opacity: 0.3 }));
+    doc.line(margin, pageH - 12, pageW - margin, pageH - 12);
+    doc.setGState(doc.GState({ opacity: 1 }));
+
+    // Footer text
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(gray[0], gray[1], gray[2]);
+    const footer = `${profile.name} - ${lang === 'en' ? 'CV' : 'CV'}`;
+    doc.text(footer, pageW / 2, pageH - 8, { align: 'center' });
   }
 
-  // Generate filename
-  const filename = `${profile.name.replace(/\s+/g, '_')}_CV_${lang.toUpperCase()}.pdf`;
-  
-  // Save PDF
-  doc.save(filename);
+  return doc;
+};
+
+// Main export function - navigates to preview URL
+export const generatePDF = async ({ data, lang }: PDFOptions) => {
+  try {
+    const blob = await generatePDFBlob({ data, lang });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Maximillian_Fernandez_CV_${lang.toUpperCase()}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+  }
 };

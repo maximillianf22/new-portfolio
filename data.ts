@@ -15,7 +15,7 @@ export const data: AppData = {
   "spanish": {
     "headline": "Líder Técnico de Producto & Frontend Senior",
     "sub_headline": "Construyendo el futuro de la Web y la IA",
-    "summary": "Ingeniero de Software y Líder Técnico con 10 años de experiencia construyendo productos digitales escalables. Experto en cerrar la brecha entre la Arquitectura Frontend (React/Next.js), el Diseño de Producto (Figma) y la Estrategia de Negocio. Actualmente lidero la estrategia técnica en una startup de IA en EE.UU., diseñando arquitecturas desde cero e integrando flujos de Inteligencia Artificial.",
+    "summary": "Ingeniero de Software y Líder Técnico con 10 años de experiencia construyendo productos digitales escalables especializado en Frontend. Experto en cerrar la brecha entre la Arquitectura Frontend (React/Next.js), el Diseño de Producto (Figma) y la Estrategia de Negocio. Actualmente lidero la estrategia técnica en una startup de IA en EE.UU., diseñando arquitecturas desde cero e integrando flujos de Inteligencia Artificial.",
     "experience": [
       {
         "company": "HUMANCORE AI",
@@ -23,7 +23,7 @@ export const data: AppData = {
         "role": "Líder Técnico de Producto & Frontend Senior",
         "dates": "2023 – Presente",
         "highlights": [
-          "Arquitectura Frontend: Estructuré el núcleo del proyecto desde cero (Next.js App Router, TypeScript).",
+          "Arquitectura Frontend: Estructuré el núcleo del proyecto desde cero (Next.js App Router, TypeScript) y la arquitectura del proyecto.",
           "Diseño & Ejecución: Ciclo completo desde Figma hasta código pixel-perfect.",
           "Innovación con IA: Integración de LLMs para UI generativa.",
           "Liderazgo Estratégico: Gestión del roadmap técnico alineado a objetivos de negocio."
@@ -108,7 +108,7 @@ export const data: AppData = {
   "english": {
     "headline": "Technical Product Lead & Frontend Senior",
     "sub_headline": "Building the Future of Web & AI",
-    "summary": "Senior Software Engineer and Technical Lead with 10 years of experience building scalable digital products. Expert in bridging the gap between Frontend Architecture (React/Next.js), Product Design (Figma), and Business Strategy. Currently leading technical strategy for a US-based AI startup, designing and engineering architectures from scratch and integrating AI workflows.",
+    "summary": "Senior Software Engineer and Technical Lead with 10 years of experience building scalable digital products specialized in Frontend. Expert in bridging the gap between Frontend Architecture (React/Next.js), Product Design (Figma), and Business Strategy. Currently leading technical strategy for a US-based AI startup, designing and engineering architectures from scratch and integrating AI workflows.",
     "experience": [
       {
         "company": "HUMANCORE AI",
@@ -116,7 +116,7 @@ export const data: AppData = {
         "role": "Technical Product Lead & Frontend Senior",
         "dates": "2023 – Present",
         "highlights": [
-          "Frontend Architecture: Architected product core from scratch (Next.js App Router, TypeScript).",
+          "Frontend Architecture: Architected product core from scratch (Next.js App Router, TypeScript) and the project architecture.",
           "End-to-End Design: Led feature lifecycle from Figma to pixel-perfect code.",
           "AI Innovation: Deployed AI-driven UI features with Vercel AI SDK & OpenAI.",
           "Strategic Leadership: Managed technical roadmap aligning with business growth."
