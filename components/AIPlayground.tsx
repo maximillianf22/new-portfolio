@@ -38,7 +38,7 @@ export const AIPlayground: React.FC<AIPlaygroundProps> = ({ lang }) => {
   // Update initial message when language changes if chat hasn't started
   useEffect(() => {
      if(messages.length === 1 && messages[0].id === 'init') {
-         setMessages([INITIAL_MESSAGE]);
+         setMessages([{ ...INITIAL_MESSAGE, id: 'init' }]);
      }
   }, [lang]);
 
@@ -77,14 +77,72 @@ INSTRUCTIONS:
 - If you don't know something specific, suggest contacting Max directly at ${profile.email}`;
   };
 
-  const callDeepSeekAPI = async (question: string) => {
-    const DEEPSEEK_API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY;
-    const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+  const getSimulatedResponse = (question: string): string => {
+    const content = lang === 'en' ? data.english : data.spanish;
+    const profile = data.profile;
+    const questionLower = question.toLowerCase();
     
-    if (!DEEPSEEK_API_KEY) {
-      throw new Error('API key not configured');
+    if (questionLower.includes('stack') || questionLower.includes('tecnolog') || questionLower.includes('tech')) {
+      const skills = Object.entries(content.skills).map(([cat, items]) => 
+        `${cat}: ${typeof items === 'string' ? items : items.join(', ')}`
+      ).join('\n');
+      return lang === 'en' 
+        ? `Max's tech stack includes:\n\n${skills}\n\nHe specializes in modern frontend architectures, particularly with Next.js, React, and TypeScript.`
+        : `El stack técnico de Max incluye:\n\n${skills}\n\nSe especializa en arquitecturas frontend modernas, particularmente con Next.js, React y TypeScript.`;
     }
     
+    if (questionLower.includes('disponib') || questionLower.includes('available') || questionLower.includes('freelance') || questionLower.includes('proyecto')) {
+      return lang === 'en'
+        ? `Yes! Max is open to new opportunities, freelance projects, and collaborations. You can reach him directly at ${profile.email} or through his LinkedIn profile.`
+        : `¡Sí! Max está abierto a nuevas oportunidades, proyectos freelance y colaboraciones. Puedes contactarlo directamente en ${profile.email} o a través de su perfil de LinkedIn.`;
+    }
+    
+    if (questionLower.includes('github') || questionLower.includes('repositorio') || questionLower.includes('code')) {
+      return lang === 'en'
+        ? `You can find Max's GitHub profile at: https://github.com/maximillianf22\n\nHe has several projects showcasing his frontend expertise, including modern React applications and Next.js architectures.`
+        : `Puedes encontrar el perfil de GitHub de Max en: https://github.com/maximillianf22\n\nTiene varios proyectos que muestran su experiencia en frontend, incluyendo aplicaciones React modernas y arquitecturas Next.js.`;
+    }
+    
+    if (questionLower.includes('chiste') || questionLower.includes('joke') || questionLower.includes('humor')) {
+      const jokes = lang === 'en' ? [
+        "Why do programmers prefer dark mode? Because light attracts bugs! 🐛",
+        "How many programmers does it take to change a light bulb? None, that's a hardware problem! 💡",
+        "Why did the developer go broke? Because he used up all his cache! 💰"
+      ] : [
+        "¿Por qué los programadores prefieren el modo oscuro? ¡Porque la luz atrae bugs! 🐛",
+        "¿Cuántos programadores se necesitan para cambiar una bombilla? Ninguno, ¡eso es un problema de hardware! 💡",
+        "¿Por qué el desarrollador se quedó sin dinero? ¡Porque usó toda su caché! 💰"
+      ];
+      return jokes[Math.floor(Math.random() * jokes.length)];
+    }
+    
+    if (questionLower.includes('experiencia') || questionLower.includes('experience') || questionLower.includes('trabajo') || questionLower.includes('work')) {
+      const exp = content.experience[0];
+      return lang === 'en'
+        ? `Max is currently ${exp.role} at ${exp.company} in ${exp.location}. He has extensive experience in frontend development, technical leadership, and product development. For more details, check out his full experience section on the portfolio.`
+        : `Max actualmente es ${exp.role} en ${exp.company} en ${exp.location}. Tiene amplia experiencia en desarrollo frontend, liderazgo técnico y desarrollo de productos. Para más detalles, revisa su sección completa de experiencia en el portafolio.`;
+    }
+    
+    if (questionLower.includes('hola') || questionLower.includes('hello') || questionLower.includes('hi') || questionLower.includes('saludo')) {
+      return lang === 'en'
+        ? `Hello! I'm Max's AI assistant. I can tell you about his tech stack, availability, projects, and more. What would you like to know?`
+        : `¡Hola! Soy el asistente IA de Max. Puedo contarte sobre su stack técnico, disponibilidad, proyectos y más. ¿Qué te gustaría saber?`;
+    }
+    
+    return lang === 'en'
+      ? `I can help you learn about Max's technical skills, experience, availability, and projects. Feel free to ask specific questions, or contact Max directly at ${profile.email} for detailed inquiries.`
+      : `Puedo ayudarte a conocer las habilidades técnicas, experiencia, disponibilidad y proyectos de Max. Siéntete libre de hacer preguntas específicas, o contacta a Max directamente en ${profile.email} para consultas detalladas.`;
+  };
+
+  const callDeepSeekAPI = async (question: string) => {
+    const DEEPSEEK_API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY;
+    
+    if (!DEEPSEEK_API_KEY) {
+      await new Promise(resolve => setTimeout(resolve, 800));
+      return getSimulatedResponse(question);
+    }
+    
+    const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
     const systemPrompt = buildContext();
     
     const conversationHistory = messages
@@ -94,48 +152,65 @@ INSTRUCTIONS:
         content: msg.text
       }));
     
-    const response = await fetch(DEEPSEEK_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          ...conversationHistory,
-          { role: 'user', content: question }
-        ],
-        stream: false,
-        temperature: 0.7
-      })
-    });
+    try {
+      const response = await fetch(DEEPSEEK_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: 'deepseek-chat',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            ...conversationHistory,
+            { role: 'user', content: question }
+          ],
+          stream: false,
+          temperature: 0.7
+        })
+      });
 
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.choices[0]?.message?.content || getSimulatedResponse(question);
+    } catch (error) {
+      console.error('Error calling DeepSeek API, using simulated response:', error);
+      return getSimulatedResponse(question);
     }
-
-    const data = await response.json();
-    return data.choices[0]?.message?.content || (lang === 'en' ? 'Sorry, I could not generate a response.' : 'Lo siento, no pude generar una respuesta.');
   };
 
   const simulateResponse = async (question: string) => {
     setIsTyping(true);
     
-    const newMessageId = Date.now().toString();
-    setMessages(prev => [...prev, { id: newMessageId, role: 'assistant', text: "", isTyping: true }]);
+    const newMessageId = `assistant-${Date.now()}`;
+    
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    setMessages(prev => {
+      const lastMessage = prev[prev.length - 1];
+      if (lastMessage && lastMessage.role === 'user') {
+        return [...prev, { id: newMessageId, role: 'assistant', text: "", isTyping: true }];
+      }
+      return prev;
+    });
     
     try {
       const responseText = await callDeepSeekAPI(question);
       
-      // Streaming effect
       let i = 0;
       const streamInterval = setInterval(() => {
         if (i < responseText.length) {
-          setMessages(prev => prev.map(msg => 
-            msg.id === newMessageId ? { ...msg, text: responseText.substring(0, i + 1) } : msg
-          ));
+          setMessages(prev => {
+            return prev.map(msg => 
+              msg.id === newMessageId 
+                ? { ...msg, text: responseText.substring(0, i + 1), isTyping: false } 
+                : msg
+            );
+          });
           i++;
           scrollToBottom();
         } else {
@@ -148,17 +223,9 @@ INSTRUCTIONS:
       }, 20);
     } catch (error) {
       console.error('Error calling DeepSeek API:', error);
-      let errorMessage: string;
-      
-      if (error instanceof Error && error.message === 'API key not configured') {
-        errorMessage = lang === 'en'
-          ? "AI features are currently unavailable. Please contact Max directly for inquiries."
-          : "Las funciones de IA no están disponibles actualmente. Por favor contacta a Max directamente.";
-      } else {
-        errorMessage = lang === 'en' 
-          ? "Sorry, I'm having trouble connecting right now. Please try again later or contact Max directly."
-          : "Lo siento, estoy teniendo problemas para conectarme. Por favor intenta más tarde o contacta a Max directamente.";
-      }
+      const errorMessage = lang === 'en' 
+        ? "Sorry, I'm having trouble connecting right now. Please try again later or contact Max directly."
+        : "Lo siento, estoy teniendo problemas para conectarme. Por favor intenta más tarde o contacta a Max directamente.";
       
       setMessages(prev => prev.map(msg => 
         msg.id === newMessageId ? { ...msg, text: errorMessage, isTyping: false } : msg
@@ -167,14 +234,17 @@ INSTRUCTIONS:
     }
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!inputValue.trim() || isTyping) return;
     
     const userText = inputValue.trim();
+    const userMessageId = `user-${Date.now()}`;
     trackEvent('chat_interaction', { type: 'message_sent', length: userText.length });
     
-    setMessages(prev => [...prev, { id: Date.now().toString(), role: 'user', text: userText }]);
+    setMessages(prev => [...prev, { id: userMessageId, role: 'user', text: userText }]);
     setInputValue("");
+    
+    await new Promise(resolve => setTimeout(resolve, 50));
     scrollToBottom();
     simulateResponse(userText);
   };
@@ -185,10 +255,13 @@ INSTRUCTIONS:
       }
   };
 
-  const handleQuestionClick = (question: string) => {
+  const handleQuestionClick = async (question: string) => {
     if (isTyping) return;
+    const userMessageId = `user-${Date.now()}`;
     trackEvent('chat_interaction', { type: 'preset_question', question });
-    setMessages(prev => [...prev, { id: Date.now().toString(), role: 'user', text: question }]);
+    setMessages(prev => [...prev, { id: userMessageId, role: 'user', text: question }]);
+    
+    await new Promise(resolve => setTimeout(resolve, 50));
     scrollToBottom();
     simulateResponse(question);
   };
@@ -255,7 +328,7 @@ INSTRUCTIONS:
                     </motion.div>
                 ))}
             </AnimatePresence>
-            {isTyping && messages[messages.length - 1].role === 'user' && (
+            {isTyping && messages.length > 0 && messages[messages.length - 1].role === 'user' && !messages.some(msg => msg.id.startsWith('assistant-') && msg.isTyping) && (
                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-4">
                     <div className="h-8 w-8 rounded-full bg-purple-600 flex items-center justify-center shrink-0">
                         <Bot size={16} className="text-white" />

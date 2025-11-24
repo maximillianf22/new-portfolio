@@ -32,6 +32,17 @@ export interface Testimonial {
   image?: string;
 }
 
+export interface Article {
+  id: string;
+  title: string;
+  date: string;
+  description: string;
+  url?: string;
+  external?: boolean;
+  tags?: string[];
+  content?: string;
+}
+
 export interface LanguageContent {
   headline: string;
   sub_headline: string;
@@ -40,6 +51,7 @@ export interface LanguageContent {
   skills: SkillSet;
   education: EducationData[];
   testimonials?: Testimonial[];
+  articles?: Article[];
 }
 
 export interface ProfileData {
