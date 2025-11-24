@@ -130,13 +130,31 @@ export const data: AppData = {
       }
     ],
     "skills": {
-      "Frontend Architecture": "Next.js, React, TypeScript, Vue, Turborepo",
-      "Modern UI & Styling": "Tailwind CSS, Shadcn/UI, Framer Motion, CSS Modules, Responsive Design",
-      "AI & Innovation": "LLMs Integration (OpenAI, Anthropic), Generative UI, Prompt Engineering",
-      "State & Data": "GraphQL (Apollo), TanStack Query, Server Actions, RESTful APIs",
-      "Product Design": "Figma (Dev Mode, Design Systems), UX/UI Prototyping, Adobe XD",
-      "Tools & Methods": "Git, CI/CD, Agile/Scrum, Jira, Vercel Deployment, Docker"
+      "Arquitectura Frontend": "Next.js (App Router, Pages Router), React 18+, TypeScript, Vue 3, Nuxt.js, Turborepo, Monorepos",
+      "UI Moderna & Estilos": "Tailwind CSS, Shadcn/UI, Radix UI, Framer Motion, CSS Modules, Styled Components, SASS/SCSS, Responsive Design, Mobile-First",
+      "IA & Innovación": "Integración de LLMs (OpenAI GPT-4, Claude, Gemini), Generative UI, Prompt Engineering, Funcionalidades con IA, Sistemas RAG",
+      "Gestión de Estado": "Zustand, Redux Toolkit, Jotai, React Context, TanStack Query, SWR, Server State Management",
+      "Datos & APIs": "GraphQL (Apollo Client), TanStack Query, Server Actions, RESTful APIs, tRPC, WebSockets, Datos en Tiempo Real",
+      "Testing & Calidad": "Jest, React Testing Library, Playwright, Cypress, Vitest, Unit Testing, Integration Testing, E2E Testing",
+      "Diseño de Producto": "Figma (Dev Mode, Design Systems, Prototyping), Diseño UX/UI, Adobe XD, Design Tokens, Librerías de Componentes",
+      "Backend & Base de Datos": "Node.js, Express, NestJS, PostgreSQL, MongoDB, Prisma ORM, Supabase, Firebase",
+      "DevOps & Herramientas": "Git, GitHub Actions, CI/CD, Docker, Vercel, AWS, Cloudflare, Webpack, Vite, ESLint, Prettier",
+      "Metodologías": "Agile/Scrum, Kanban, Design Thinking, Atomic Design, Component-Driven Development, Documentation-First"
     },
+    "certifications": [
+      {
+        "title": "Integración Avanzada de LLMs en Aplicaciones Web",
+        "description": "Experiencia práctica implementando sistemas de IA conversacional con OpenAI, Anthropic y Gemini en producción"
+      },
+      {
+        "title": "Arquitectura de Sistemas Escalables",
+        "description": "Diseño e implementación de arquitecturas frontend modulares y escalables para aplicaciones empresariales"
+      },
+      {
+        "title": "Liderazgo Técnico & Mentoría",
+        "description": "Experiencia liderando equipos cross-funcionales y mentoreando desarrolladores junior y mid-level"
+      }
+    ],
     "education": [
       {
         "degree": "Ingeniería en Informática",
@@ -362,13 +380,31 @@ export const data: AppData = {
       }
     ],
     "skills": {
-      "Frontend Architecture": "Next.js, React, TypeScript, Vue, Turborepo",
-      "Modern UI & Styling": "Tailwind CSS, Shadcn/UI, Framer Motion, CSS Modules, Responsive Design",
-      "AI & Innovation": "LLMs Integration (OpenAI, Anthropic), Generative UI, Prompt Engineering",
-      "State & Data": "GraphQL (Apollo), TanStack Query, Server Actions, RESTful APIs",
-      "Product Design": "Figma (Dev Mode, Design Systems), UX/UI Prototyping, Adobe XD",
-      "Tools & Methods": "Git, CI/CD, Agile/Scrum, Jira, Vercel Deployment, Docker"
+      "Frontend Architecture": "Next.js (App Router, Pages Router), React 18+, TypeScript, Vue 3, Nuxt.js, Turborepo, Monorepos",
+      "Modern UI & Styling": "Tailwind CSS, Shadcn/UI, Radix UI, Framer Motion, CSS Modules, Styled Components, SASS/SCSS, Responsive Design, Mobile-First",
+      "AI & Innovation": "LLMs Integration (OpenAI GPT-4, Claude, Gemini), Generative UI, Prompt Engineering, AI-Powered Features, RAG Systems",
+      "State Management": "Zustand, Redux Toolkit, Jotai, React Context, TanStack Query, SWR, Server State Management",
+      "Data & APIs": "GraphQL (Apollo Client), TanStack Query, Server Actions, RESTful APIs, tRPC, WebSockets, Real-time Data",
+      "Testing & Quality": "Jest, React Testing Library, Playwright, Cypress, Vitest, Unit Testing, Integration Testing, E2E Testing",
+      "Product Design": "Figma (Dev Mode, Design Systems, Prototyping), UX/UI Design, Adobe XD, Design Tokens, Component Libraries",
+      "Backend & Database": "Node.js, Express, NestJS, PostgreSQL, MongoDB, Prisma ORM, Supabase, Firebase",
+      "DevOps & Tools": "Git, GitHub Actions, CI/CD, Docker, Vercel, AWS, Cloudflare, Webpack, Vite, ESLint, Prettier",
+      "Methodologies": "Agile/Scrum, Kanban, Design Thinking, Atomic Design, Component-Driven Development, Documentation-First"
     },
+    "certifications": [
+      {
+        "title": "Advanced LLM Integration in Web Applications",
+        "description": "Hands-on experience implementing conversational AI systems with OpenAI, Anthropic, and Gemini in production"
+      },
+      {
+        "title": "Scalable Systems Architecture",
+        "description": "Design and implementation of modular and scalable frontend architectures for enterprise applications"
+      },
+      {
+        "title": "Technical Leadership & Mentorship",
+        "description": "Experience leading cross-functional teams and mentoring junior and mid-level developers"
+      }
+    ],
     "education": [
       {
         "degree": "Computer Engineering",

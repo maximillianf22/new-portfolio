@@ -15,13 +15,13 @@ export interface EducationData {
   year: string;
 }
 
+export interface CertificationData {
+  title: string;
+  description: string;
+}
+
 export interface SkillSet {
-  "Frontend Architecture": string;
-  "Modern UI & Styling": string;
-  "AI & Innovation": string;
-  "State & Data": string;
-  "Product Design": string;
-  "Tools & Methods": string;
+  [key: string]: string;
 }
 
 export interface Testimonial {
@@ -49,9 +49,9 @@ export interface LanguageContent {
   sub_headline: string;
   summary: string;
   experience: ExperienceData[];
-  // Optional parallel section for consulting/contract engagements
   consulting?: ExperienceData[];
   skills: SkillSet;
+  certifications?: CertificationData[];
   education: EducationData[];
   testimonials?: Testimonial[];
   articles?: Article[];

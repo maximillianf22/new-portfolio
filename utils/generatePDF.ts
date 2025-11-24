@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf';
-import { AppData, ExperienceData, SkillSet, EducationData } from '../types';
+import { AppData, ExperienceData, SkillSet, EducationData, CertificationData } from '../types';
 
 interface PDFOptions {
   data: AppData;
@@ -419,6 +419,58 @@ const createPDFDocument = async (data: AppData, lang: 'en' | 'es'): Promise<jsPD
     y += skillsHeight + 1;
   });
 
+  // Certifications Section
+  if (content.certifications && content.certifications.length > 0) {
+    checkSpace(25);
+    y += 10;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(white[0], white[1], white[2]);
+    doc.text(
+      lang === 'en' ? 'CERTIFICATIONS & ACHIEVEMENTS' : 'CERTIFICACIONES Y LOGROS',
+      margin,
+      y
+    );
+    y += 7;
+
+    // Purple accent line
+    doc.setDrawColor(purple[0], purple[1], purple[2]);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y, margin + 40, y);
+    y += 7;
+
+    content.certifications.forEach((cert: CertificationData, idx: number) => {
+      if (idx > 0) {
+        y += 4;
+      }
+
+      // Calculate space needed
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      const descLines = doc.splitTextToSize(cert.description, contentW - 4);
+      const descHeight = descLines.length * 4.5;
+      const totalHeight = 6 + descHeight + 4;
+
+      checkSpace(totalHeight);
+
+      // Certification title with purple bullet
+      doc.setFillColor(purple[0], purple[1], purple[2]);
+      doc.circle(margin + 2, y - 1, 1.5, 'F');
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(white[0], white[1], white[2]);
+      doc.text(cert.title, margin + 6, y);
+      y += 6;
+
+      // Description
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(gray[0], gray[1], gray[2]);
+      doc.text(descLines, margin + 6, y);
+      y += descHeight + 2;
+    });
+  }
 
   // Footer on all pages
   const totalPages = doc.internal.pages.length - 1;
