@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Send, Bot, User, RefreshCw } from 'lucide-react';
 import { ChatMessage } from '../types';
+import { data } from '../data';
 
 interface AIPlaygroundProps {
     lang: 'en' | 'es';
@@ -40,62 +41,117 @@ export const AIPlayground: React.FC<AIPlaygroundProps> = ({ lang }) => {
      }
   }, [lang]);
 
-  const simulateResponse = (question: string) => {
-    setIsTyping(true);
-    let responseText = "";
+  const buildContext = () => {
+    const content = lang === 'en' ? data.english : data.spanish;
+    const profile = data.profile;
     
-    // Simple logic to simulate AI responses
-    const isSpanish = lang === 'es';
-    const q = question.toLowerCase();
+    const experienceText = content.experience.map(exp => 
+      `${exp.role} at ${exp.company} (${exp.location}) - ${exp.dates}\n${exp.highlights.map(h => `- ${h}`).join('\n')}`
+    ).join('\n\n');
+    
+    const skillsText = Object.entries(content.skills).map(([category, items]) => 
+      `${category}: ${typeof items === 'string' ? items : items.join(', ')}`
+    ).join('\n');
+    
+    return `You are an AI assistant representing Maximillian Fernandez, a Technical Product Lead & Senior Frontend Developer.
 
-    if (q.includes("stack") || q.includes("técnico") || q.includes("tecnologias") || q.includes("tech")) {
-        responseText = isSpanish 
-          ? "Max se especializa en el ecosistema React. Su stack principal incluye Next.js (App Router), TypeScript, Tailwind CSS y Framer Motion. También integra profundamente IA usando OpenAI y Vercel SDK."
-          : "Max specializes in the React ecosystem. His core stack includes Next.js 14, TypeScript, Tailwind CSS, and Framer Motion. He's also deep into AI integration using OpenAI and Google Gemini.";
-    } else if (q.includes("available") || q.includes("disponible") || q.includes("work") || q.includes("trabajo") || q.includes("hire") || q.includes("contratar")) {
-        responseText = isSpanish
-          ? "¡Sí! Max está abierto a nuevas oportunidades de liderazgo técnico y arquitectura frontend. Prefiere roles con alto impacto."
-          : "Max is currently open to new opportunities! He prefers roles that involve architectural decision-making and high-impact product work.";
-    } else if (q.includes("github") || q.includes("code") || q.includes("codigo") || q.includes("repo")) {
-        responseText = isSpanish
-          ? "Puedes encontrar su trabajo open source en github.com/maxfernandez. Tiene más de 1.2k contribuciones este año."
-          : "You can find his open source work at github.com/maxfernandez. He has over 1.2k contributions this year alone.";
-    } else if (q.includes("joke") || q.includes("chiste") || q.includes("funny")) {
-        responseText = isSpanish
-          ? "¿Por qué el componente de React estaba triste? Porque no tenía estado. 🥁"
-          : "Why did the React component feel sad? Because it didn't have any state. 🥁";
-    } else if (q.includes("hello") || q.includes("hi") || q.includes("hola") || q.includes("hey")) {
-        responseText = isSpanish
-           ? "¡Hola! ¿En qué puedo ayudarte hoy?"
-           : "Hello! How can I help you today?";
-    } else {
-        responseText = isSpanish
-          ? "Esa es una pregunta interesante. Max siempre está aprendiendo cosas nuevas. Deberías enviarle un correo para conversar."
-          : "That's an interesting question! Max is always learning new things. You should email him directly to discuss that.";
+PROFILE:
+- Name: ${profile.name}
+- Location: ${profile.location}
+- Email: ${profile.email}
+- Headline: ${content.headline}
+- Summary: ${content.summary}
+
+PROFESSIONAL EXPERIENCE:
+${experienceText}
+
+TECHNICAL SKILLS:
+${skillsText}
+
+INSTRUCTIONS:
+- Answer questions about Max's experience, skills, availability, and projects
+- Be professional, friendly, and concise
+- If asked about availability or hiring, mention he's open to new opportunities
+- Always respond in ${lang === 'en' ? 'English' : 'Spanish'}
+- If you don't know something specific, suggest contacting Max directly at ${profile.email}`;
+  };
+
+  const callDeepSeekAPI = async (question: string) => {
+    const DEEPSEEK_API_KEY = 'sk-87f18d2938e8441b8e0f286f19730b52';
+    const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+    
+    const systemPrompt = buildContext();
+    
+    const conversationHistory = messages
+      .filter(msg => msg.id !== 'init')
+      .map(msg => ({
+        role: msg.role,
+        content: msg.text
+      }));
+    
+    const response = await fetch(DEEPSEEK_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...conversationHistory,
+          { role: 'user', content: question }
+        ],
+        stream: false,
+        temperature: 0.7
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
     }
 
-    // Streaming effect
-    setTimeout(() => {
-        const newMessageId = Date.now().toString();
-        setMessages(prev => [...prev, { id: newMessageId, role: 'assistant', text: "", isTyping: true }]);
-        
-        let i = 0;
-        const streamInterval = setInterval(() => {
-            if (i < responseText.length) {
-                setMessages(prev => prev.map(msg => 
-                    msg.id === newMessageId ? { ...msg, text: responseText.substring(0, i + 1) } : msg
-                ));
-                i++;
-                scrollToBottom();
-            } else {
-                clearInterval(streamInterval);
-                setMessages(prev => prev.map(msg => 
-                    msg.id === newMessageId ? { ...msg, isTyping: false } : msg
-                ));
-                setIsTyping(false);
-            }
-        }, 30); // Typing speed
-    }, 1000); // Thinking delay
+    const data = await response.json();
+    return data.choices[0]?.message?.content || (lang === 'en' ? 'Sorry, I could not generate a response.' : 'Lo siento, no pude generar una respuesta.');
+  };
+
+  const simulateResponse = async (question: string) => {
+    setIsTyping(true);
+    
+    const newMessageId = Date.now().toString();
+    setMessages(prev => [...prev, { id: newMessageId, role: 'assistant', text: "", isTyping: true }]);
+    
+    try {
+      const responseText = await callDeepSeekAPI(question);
+      
+      // Streaming effect
+      let i = 0;
+      const streamInterval = setInterval(() => {
+        if (i < responseText.length) {
+          setMessages(prev => prev.map(msg => 
+            msg.id === newMessageId ? { ...msg, text: responseText.substring(0, i + 1) } : msg
+          ));
+          i++;
+          scrollToBottom();
+        } else {
+          clearInterval(streamInterval);
+          setMessages(prev => prev.map(msg => 
+            msg.id === newMessageId ? { ...msg, isTyping: false } : msg
+          ));
+          setIsTyping(false);
+        }
+      }, 20);
+    } catch (error) {
+      console.error('Error calling DeepSeek API:', error);
+      const errorMessage = lang === 'en' 
+        ? "Sorry, I'm having trouble connecting right now. Please try again later or contact Max directly."
+        : "Lo siento, estoy teniendo problemas para conectarme. Por favor intenta más tarde o contacta a Max directamente.";
+      
+      setMessages(prev => prev.map(msg => 
+        msg.id === newMessageId ? { ...msg, text: errorMessage, isTyping: false } : msg
+      ));
+      setIsTyping(false);
+    }
   };
 
   const handleSendMessage = () => {
