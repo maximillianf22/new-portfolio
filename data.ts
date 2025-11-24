@@ -37,7 +37,7 @@ export const data: AppData = {
         "dates": "2022 – 2023",
         "highlights": [
           "Re-platforming: Arquitecté y lideré la migración completa de un monolito PHP legado a una arquitectura frontend moderna desde cero.",
-          "Liderazgo de Squad: Dirigí un equipo de 16 desarrolladores, asegurando calidad de código y entregas puntuales.",
+          "Liderazgo de Squad: Dirigí un equipo cross-funcional de 16 personas (developers, QA analysts, designers, product managers), asegurando calidad y entregas puntuales.",
           "Escalabilidad Global: Habilité el lanzamiento de tiendas localizadas para MX y CL mediante una arquitectura i18n robusta.",
           "Legado: Entregué documentación técnica completa y entrené al equipo para garantizar la mantenibilidad post-salida."
         ]
@@ -200,7 +200,7 @@ export const data: AppData = {
         "dates": "2022 – 2023",
         "highlights": [
           "Re-platforming: Architected and led the complete migration from a legacy PHP monolith to a modern frontend architecture from scratch.",
-          "Squad Leadership: Led a squad of 16 developers, ensuring code quality and on-time delivery.",
+          "Squad Leadership: Led a cross-functional squad of 16 people (developers, QA analysts, designers, product managers), ensuring quality and on-time delivery.",
           "Global Scale: Enabled the launch of localized storefronts for MX and CL through a robust i18n architecture.",
           "Legacy: Delivered complete technical documentation and trained the team to ensure post-departure maintainability."
         ]
@@ -390,9 +390,9 @@ export const data: AppData = {
       "problem": "Legacy platform needed complete UX/UI redesign and modernization to support growing operational needs and improve user experience across multiple modules.",
       "solution": "Led UX/UI redesign and architecture modernization, migrating legacy systems to React/TypeScript. Designed and implemented V2.0 with improved user experience across logistics, payment, and document management modules.",
       "impact": [
-        "40% reduction in operational costs",
-        "80% improvement in service assignment times",
-        "100% real-time transparency through reports"
+        "Complete UX/UI redesign and modernization",
+        "Successful migration to React/TypeScript",
+        "Improved user experience across all modules"
       ]
     }
   ]
