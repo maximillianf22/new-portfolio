@@ -162,11 +162,11 @@ export const Home: React.FC = () => {
 
         <AIPlayground lang={lang} />
 
+        <FigmaDesigns lang={lang} />
+
         {content.testimonials && content.testimonials.length > 0 && (
           <Testimonials testimonials={content.testimonials} lang={lang} />
         )}
-
-        <FigmaDesigns lang={lang} />
 
         <section id="projects" className="py-24 max-w-7xl mx-auto px-4 scroll-mt-24">
           <BlurFade>

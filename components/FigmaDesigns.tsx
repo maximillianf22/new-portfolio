@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
-import { motion, useMotionTemplate, useMotionValue, useSpring } from 'framer-motion';
-import { ExternalLink, PenTool } from 'lucide-react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { ExternalLink } from 'lucide-react';
 import { BlurFade } from './ui/BlurFade';
 
 const FigmaIcon: React.FC<{ size?: number; className?: string }> = ({ size = 24, className = '' }) => (
@@ -45,8 +45,6 @@ interface FigmaDesign {
 interface FigmaDesignsProps {
   lang: 'en' | 'es';
 }
-
-const ROTATION_RANGE = 15;
 
 const figmaDesigns: FigmaDesign[] = [
   {
@@ -109,41 +107,6 @@ interface FigmaCardProps {
 }
 
 const FigmaCard: React.FC<FigmaCardProps> = ({ design, index, lang }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
-
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const xSpring = useSpring(x, { stiffness: 300, damping: 30 });
-  const ySpring = useSpring(y, { stiffness: 300, damping: 30 });
-
-  const transform = useMotionTemplate`rotateX(${xSpring}deg) rotateY(${ySpring}deg)`;
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
-
-    const rect = ref.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-
-    const mouseX = ((e.clientX - rect.left) / width - 0.5) * ROTATION_RANGE;
-    const mouseY = ((e.clientY - rect.top) / height - 0.5) * ROTATION_RANGE * -1;
-
-    x.set(mouseY);
-    y.set(mouseX);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-    setIsHovered(false);
-  };
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
   const getGradient = (index: number) => {
     const gradients = [
       'from-purple-500/20 via-pink-500/20 to-rose-500/20',
@@ -155,34 +118,19 @@ const FigmaCard: React.FC<FigmaCardProps> = ({ design, index, lang }) => {
   };
 
   return (
-    <BlurFade delay={index * 0.15}>
-      <div
-        className="relative h-[320px] w-full group perspective-1000"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        <motion.div
-          ref={ref}
-          onMouseMove={handleMouseMove}
-          style={{
-            transformStyle: 'preserve-3d',
-            transform,
-          }}
-          className="absolute inset-0 w-full h-full rounded-2xl bg-gradient-to-br border border-neutral-800 z-0 transition-all duration-500 overflow-hidden"
-        >
+    <BlurFade delay={index * 0.1}>
+      <div className="relative h-[320px] w-full group">
+        <div className="absolute inset-0 w-full h-full rounded-2xl bg-gradient-to-br border border-neutral-800 overflow-hidden transition-all duration-300 hover:border-neutral-700">
           <div
-            className={`absolute inset-0 bg-gradient-to-br ${getGradient(index)} opacity-50 group-hover:opacity-100 transition-opacity duration-500`}
+            className={`absolute inset-0 bg-gradient-to-br ${getGradient(index)} opacity-50 group-hover:opacity-100 transition-opacity duration-300`}
           />
           
-          <div className="absolute inset-0 bg-neutral-900/40 backdrop-blur-sm group-hover:bg-neutral-900/20 transition-all duration-500" />
+          <div className="absolute inset-0 bg-neutral-900/40 backdrop-blur-sm group-hover:bg-neutral-900/20 transition-all duration-300" />
           
-          <div
-            style={{ transform: 'translateZ(40px)' }}
-            className="absolute inset-0 p-6 flex flex-col justify-between"
-          >
+          <div className="absolute inset-0 p-6 flex flex-col justify-between">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-white/10 rounded-xl backdrop-blur-sm border border-white/10 group-hover:bg-white/20 transition-colors">
+                <div className="p-3 bg-white/10 rounded-xl backdrop-blur-sm border border-white/10 group-hover:bg-white/20 transition-colors duration-300">
                   <FigmaIcon size={24} />
                 </div>
                 <div>
@@ -194,24 +142,22 @@ const FigmaCard: React.FC<FigmaCardProps> = ({ design, index, lang }) => {
               </div>
             </div>
 
-            <motion.a
+            <a
               href={design.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-lg text-white font-medium transition-all duration-300 group-hover:border-white/40 group-hover:scale-105"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-lg text-white font-medium transition-all duration-200 group-hover:border-white/40"
             >
               <span>{lang === 'en' ? 'Open in Figma' : 'Abrir en Figma'}</span>
-              <ExternalLink size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </motion.a>
+              <ExternalLink size={16} />
+            </a>
           </div>
 
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors" />
-            <div className="absolute bottom-0 left-0 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-colors" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors duration-300" />
+            <div className="absolute bottom-0 left-0 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-colors duration-300" />
           </div>
-        </motion.div>
+        </div>
       </div>
     </BlurFade>
   );
