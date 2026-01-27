@@ -8,6 +8,7 @@ import { Footer } from "./Footer";
 import { Skills } from "./Skills";
 import { Testimonials } from "./Testimonials";
 import { Blog } from "./Blog";
+import { FigmaDesigns } from "./FigmaDesigns";
 import { BlurFade } from "./ui/BlurFade";
 import { data } from "../data";
 import { Globe, Download } from "lucide-react";
@@ -95,6 +96,9 @@ export const Home: React.FC = () => {
             <a href="#skills" className="hover:text-white transition-colors">
               {lang === "en" ? "Skills" : "Habilidades"}
             </a>
+            <a href="#designs" className="hover:text-white transition-colors">
+              {lang === "en" ? "Designs" : "Diseños"}
+            </a>
             <a href="#projects" className="hover:text-white transition-colors">
               {lang === "en" ? "Projects" : "Proyectos"}
             </a>
@@ -161,6 +165,8 @@ export const Home: React.FC = () => {
         {content.testimonials && content.testimonials.length > 0 && (
           <Testimonials testimonials={content.testimonials} lang={lang} />
         )}
+
+        <FigmaDesigns lang={lang} />
 
         <section id="projects" className="py-24 max-w-7xl mx-auto px-4 scroll-mt-24">
           <BlurFade>
